@@ -260,7 +260,7 @@
                                     <div class="col-md-12">
                                         <div class="card card-info card-outline">
                                             <div class="card-header">
-                                                <h3 class="card-title">@lang('Alert Listener Control')</h3>
+                                                <h3 class="card-title">@lang('Attendance Listener Control')</h3>
                                                 <div class="card-tools">
                                                     <span id="alert-listener-status">
                                                         <span class="badge badge-danger">Stopped</span>
@@ -270,18 +270,18 @@
                                             <div class="card-body">
                                                 <div class="row">
                                                     <div class="col-md-4">
-                                                        <button type="button" id="start-alert-listener" class="btn btn-success btn-lg btn-block" onclick="startAlertListener()">
-                                                            <i class="fas fa-play"></i> @lang('Start Alert Listener')
+                                                        <button type="button" id="start-alert-listener" class="btn btn-success btn-lg btn-block" onclick="startAlertListener()" disabled>
+                                                            <i class="fas fa-play"></i> @lang('Start Attendance Listener')
                                                         </button>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <button type="button" id="stop-alert-listener" class="btn btn-danger btn-lg btn-block" onclick="stopAlertListener()" disabled>
-                                                            <i class="fas fa-stop"></i> @lang('Stop Alert Listener')
+                                                            <i class="fas fa-stop"></i> @lang('Stop Attendance Listener')
                                                         </button>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <button type="button" class="btn btn-warning btn-lg btn-block" onclick="loadRecentAlerts()">
-                                                            <i class="fas fa-sync"></i> @lang('Refresh Alerts')
+                                                            <i class="fas fa-sync"></i> @lang('Refresh Attendance')
                                                         </button>
                                                     </div>
                                                 </div>
@@ -295,9 +295,9 @@
 
                                 <div class="card card-success card-outline">
                                     <div class="card-header">
-                                        <h3 class="card-title">@lang('Recent Access Control Alerts')</h3>
+                                        <h3 class="card-title">@lang('Recent Access Control Attendance')</h3>
                                         <div class="card-tools">
-                                            <button type="button" class="btn btn-sm btn-danger" onclick="clearAlerts()">
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="clearAlerts()" disabled>
                                                 <i class="fas fa-trash"></i> @lang('Clear Alerts')
                                             </button>
                                         </div>

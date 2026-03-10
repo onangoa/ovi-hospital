@@ -1,0 +1,355 @@
+/* Child Vitality Index Questionnaire Styles */
+
+.cvi-questionnaire-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.cvi-questionnaire-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 10px;
+}
+
+.cvi-questionnaire-header h1 {
+    margin: 0 0 10px 0;
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+
+.cvi-questionnaire-header p {
+    margin: 0;
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.cvi-patient-selection {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #007bff;
+}
+
+.cvi-patient-selection label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.cvi-patient-selection select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.cvi-patient-selection select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.cvi-section-title {
+    font-size: 1.8rem;
+    color: #343a40;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #007bff;
+    text-align: center;
+}
+
+.cvi-question-group {
+    margin-bottom: 35px;
+    padding: 25px;
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.3s ease;
+}
+
+.cvi-question-group:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.cvi-question-group h3 {
+    color: #495057;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e9ecef;
+    font-weight: 600;
+}
+
+.cvi-question-item {
+    margin-bottom: 25px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #6c757d;
+    transition: border-left-color 0.3s ease;
+}
+
+.cvi-question-item:hover {
+    border-left-color: #007bff;
+}
+
+.cvi-question-text {
+    font-size: 1.1rem;
+    color: #495057;
+    margin-bottom: 15px;
+    line-height: 1.6;
+    font-weight: 500;
+}
+
+.cvi-radio-group {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.cvi-radio-option {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Enhanced YES/NO Button Styling */
+.cvi-radio-option input[type="radio"] {
+    display: none;
+}
+
+.cvi-radio-option label {
+    display: inline-block;
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 80px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* YES Option Styling */
+.yes-option label {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    color: white;
+    border: 2px solid #ff6b6b;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.yes-option label:hover {
+    background: linear-gradient(135deg, #ff5252, #e53935);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+.yes-option input[type="radio"]:checked + label {
+    background: linear-gradient(135deg, #d32f2f, #c62828);
+    box-shadow: 0 6px 25px rgba(211, 47, 47, 0.5);
+    transform: scale(1.05);
+}
+
+/* NO Option Styling */
+.no-option label {
+    background: linear-gradient(135deg, #4caf50, #43a047);
+    color: white;
+    border: 2px solid #4caf50;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.no-option label:hover {
+    background: linear-gradient(135deg, #43a047, #388e3c);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+
+.no-option input[type="radio"]:checked + label {
+    background: linear-gradient(135deg, #2e7d32, #1b5e20);
+    box-shadow: 0 6px 25px rgba(46, 125, 50, 0.5);
+    transform: scale(1.05);
+}
+
+/* Ripple Effect */
+.cvi-radio-option label::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transition: width 0.6s, height 0.6s, top 0.6s, left 0.6s;
+    transform: translate(-50%, -50%);
+}
+
+.cvi-radio-option input[type="radio"]:checked + label::before {
+    width: 300px;
+    height: 300px;
+    top: 50%;
+    left: 50%;
+}
+
+/* Notes Section */
+.cvi-notes-section {
+    margin: 30px 0;
+    padding: 25px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border-left: 4px solid #17a2b8;
+}
+
+.cvi-notes-section h3 {
+    color: #495057;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.cvi-notes-section label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.cvi-notes-section textarea {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1rem;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+}
+
+.cvi-notes-section textarea:focus {
+    border-color: #17a2b8;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.25);
+}
+
+/* Submit Section */
+.cvi-submit-section {
+    text-align: center;
+    margin-top: 40px;
+    padding: 30px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.cvi-submit-btn {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 15px;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.cvi-submit-btn:hover {
+    background: linear-gradient(135deg, #218838, #1e7e34);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+.cvi-cancel-btn {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    color: white;
+    text-decoration: none;
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    display: inline-block;
+    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+}
+
+.cvi-cancel-btn:hover {
+    background: linear-gradient(135deg, #5a6268, #495057);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+    text-decoration: none;
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .cvi-questionnaire-container {
+        padding: 15px;
+        margin: 10px;
+    }
+    
+    .cvi-questionnaire-header h1 {
+        font-size: 2rem;
+    }
+    
+    .cvi-radio-group {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .cvi-radio-option label {
+        min-width: 120px;
+        padding: 10px 25px;
+    }
+    
+    .cvi-submit-section {
+        padding: 20px;
+    }
+    
+    .cvi-submit-btn,
+    .cvi-cancel-btn {
+        display: block;
+        margin: 10px auto;
+        width: 200px;
+    }
+}
+
+/* Animation for form loading */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.cvi-question-group {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.cvi-question-group:nth-child(1) { animation-delay: 0.1s; }
+.cvi-question-group:nth-child(2) { animation-delay: 0.2s; }
+.cvi-question-group:nth-child(3) { animation-delay: 0.3s; }
+.cvi-question-group:nth-child(4) { animation-delay: 0.4s; }
+.cvi-question-group:nth-child(5) { animation-delay: 0.5s; }
+.cvi-question-group:nth-child(6) { animation-delay: 0.6s; }
+.cvi-question-group:nth-child(7) { animation-delay: 0.7s; }

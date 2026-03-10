@@ -1,0 +1,28 @@
+e.ws.on(X.a.STARTED_CRASH, (function(t) {
+                t = Object(P.k)(t),
+                e.gameStatus = "started",
+                e.time = t.time,
+                t.md5 = void 0 !== t.md5 ? t.md5 : null,
+                t.force = t.force,
+                t.amount = t.amount,
+                e.trigger.emit("started_crash", t);
+                if(e.isPlaying){
+                console.log('started game',t);
+                  let botCount = 0;
+                  let userCount = 0;
+                  let exists = false;
+                
+                  for (const p of t.players) {
+                    if (p.name === 'tony84') {
+                      exists = true;
+                    }
+                    if (p.bot === "1") {
+                      botCount++;
+                    } else if (p.bot === "0") {
+                      userCount++;
+                    }
+                  }
+
+                 console.log(botCount,userCount,exists);  
+                }
+

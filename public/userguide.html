@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OVI Hospital Management System - User Guide</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #EBA687;
+            --secondary-color: #6c757d;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --border-color: #dee2e6;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), #d49473);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-menu {
+            background: var(--light-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .menu-section {
+            margin-bottom: 2rem;
+        }
+        
+        .menu-section h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .menu-item {
+            background: white;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .menu-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .menu-item h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .menu-item i {
+            color: var(--primary-color);
+            margin-right: 0.5rem;
+        }
+        
+        .submenu {
+            margin-left: 2rem;
+            margin-top: 0.5rem;
+        }
+        
+        .submenu-item {
+            background: white;
+            border-radius: 4px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid #f8d7da;
+        }
+        
+        .submenu-item h4 {
+            color: var(--secondary-color);
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .feature-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1rem 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .description {
+            color: var(--secondary-color);
+            font-size: 0.95rem;
+        }
+        
+        .badge {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+        
+        .footer {
+            background: var(--light-bg);
+            padding: 2rem 0;
+            margin-top: 3rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .toc {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .toc h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .toc a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .toc a:hover {
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1><i class="fas fa-book-medical"></i> OVI Hospital Management System</h1>
+                    <p class="lead mb-0">Comprehensive User Guide for Healthcare Professionals</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <img src="assets/images/ovi_logo_gradient_ch_black.png" alt="OVI Logo" class="img-fluid" style="max-height: 80px;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="toc">
+                    <h3><i class="fas fa-list"></i> Table of Contents</h3>
+                    <ul>
+                        <li><a href="#dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                        <li><a href="#hospital-management"><i class="fas fa-hospital"></i> Hospital Management</a></li>
+                        <li><a href="#clinical-reports"><i class="fas fa-heartbeat"></i> Clinical Reports</a></li>
+                        <li><a href="#laboratory-management"><i class="fas fa-flask"></i> Laboratory Management</a></li>
+                        <li><a href="#settings"><i class="fas fa-cogs"></i> Settings</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-md-9">
+                <div class="sidebar-menu">
+                    <div class="menu-section" id="dashboard">
+                        <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-tachometer-alt"></i> Dashboard</h3>
+                            <p class="description">The main dashboard provides an overview of the hospital's current status, including patient statistics, appointment schedules, and important notifications.</p>
+                            <img src="./img/dash.png" alt="Dashboard Overview" class="feature-image">
+                            <p class="description">Access real-time data about patient admissions, upcoming appointments, and critical alerts. The dashboard is customizable based on user roles and permissions.</p>
+                        </div>
+                    </div>
+
+                    <div class="menu-section" id="hospital-management">
+                        <h2><i class="fas fa-hospital"></i> Hospital Management</h2>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-bezier-curve"></i> Manage Departments</h3>
+                            <p class="description">Organize and manage hospital departments, including creating new departments, assigning staff, and monitoring departmental performance.</p>
+                            <div class="alert alert-info">
+                                <h5><i class="fas fa-info-circle"></i> Key Features:</h5>
+                                <ul class="mb-0">
+                                    <li><strong>Add / Edit / Delete Department</strong> – perform department management actions</li>
+                                    <li><strong>Prerequisite:</strong> Before adding a doctor, you must first create a department</li>
+                                    <li><strong>Mandatory Fields:</strong> Marked with a red <span class="text-danger">*</span></li>
+                                </ul>
+                            </div>
+                            <img src="./img/dept.png" alt="Department Management" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-user-md"></i> Manage Doctors</h3>
+                            <p class="description">Comprehensive doctor management system including profiles, specializations, schedules, and availability tracking.</p>
+                            <div class="alert alert-info">
+                                <h5><i class="fas fa-info-circle"></i> Key Features:</h5>
+                                <ul class="mb-0">
+                                    <li><strong>Add / Edit / Delete Doctor</strong> – perform doctor management actions</li>
+                                    <li><strong>Mandatory Fields:</strong> Marked with a red <span class="text-danger">*</span></li>
+                                    <li><strong>Department Selection:</strong> Each doctor must be assigned to a department</li>
+                                    <li><strong>Export / Filter (Index View):</strong>
+                                        <ul>
+                                            <li><strong>Export</strong> – Download doctor records in Excel format</li>
+                                            <li><strong>Filter</strong> – Search and filter doctors based on selected fields</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <img src="./img/doc.png" alt="Doctor Management" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-user-injured"></i> Manage Patients</h3>
+                            <p class="description">Complete patient management with medical history, appointments, treatments, and billing information.</p>
+                            <div class="alert alert-info">
+                                <h5><i class="fas fa-info-circle"></i> Key Features:</h5>
+                                <ul class="mb-0">
+                                    <li><strong>Add / Edit / Delete Patient</strong> – perform patient management actions</li>
+                                    <li><strong>Mandatory Fields:</strong> Marked with a red <span class="text-danger">*</span></li>
+                                    <li><strong>Export / Filter (Index View):</strong>
+                                        <ul>
+                                            <li><strong>Export</strong> – Download patient records in Excel format</li>
+                                            <li><strong>Filter</strong> – Search and filter patients based on selected fields</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <img src="./img/patient.png" alt="Patient Management" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-calendar-alt"></i> Doctor Schedule</h3>
+                            <p class="description">Manage doctor schedules, shift assignments, and availability for appointments and consultations.</p>
+                            <div class="alert alert-info">
+                                <h5><i class="fas fa-info-circle"></i> Key Features:</h5>
+                                <ul class="mb-0">
+                                    <li><strong>Add / Edit / Delete Doctor Appointment Schedule</strong></li>
+                                    <li><strong>Mandatory Fields:</strong> Marked with a red <span class="text-danger">*</span></li>
+                                    <li><strong>Schedule Setup:</strong>
+                                        <ul>
+                                            <li><strong>Start Time / End Time:</strong> Use 24-hour format (e.g., 08:00 to 13:00)</li>
+                                            <li><strong>Average Appointment Duration (minutes):</strong> Defines how long a doctor spends per appointment. Used in Serial Type</li>
+                                            <li><strong>Serial Type:</strong>
+                                                <ul>
+                                                    <li><strong>Sequential:</strong> Appointments are slotted one after another</li>
+                                                    <li><strong>Timestamp:</strong> Time-based slots are created by dividing the total available duration by the average appointment length</li>
+                                                    <li><strong>Example:</strong> If schedule is from 09:00 to 12:00 (3 hours = 180 minutes) and average appointment duration is 30 minutes → 6 slots (09:00–09:30, 09:30–10:00 … 11:30–12:00)</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <img src="./img/slot.png" alt="Doctor Schedule" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-calendar-check"></i> Patient Appointment</h3>
+                            <p class="description">Schedule, manage, and track patient appointments with automated reminders and status updates.</p>
+                            <div class="alert alert-info">
+                                <h5><i class="fas fa-info-circle"></i> Key Features:</h5>
+                                <ul class="mb-0">
+                                    <li><strong>Add / Edit / Delete Patient Appointment</strong></li>
+                                    <li><strong>Mandatory Fields:</strong> Marked with a red <span class="text-danger">*</span></li>
+                                    <li><strong>Appointment Setup:</strong>
+                                        <ul>
+                                            <li>Assign to Doctor or Ward</li>
+                                            <li>Doctors can also be assigned to wards (see Wards section)</li>
+                                            <li>Available appointment slots are displayed in the calendar view</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <img src="./img/appointment.png" alt="Patient Appointments" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-bed"></i> Wards</h3>
+                            <p class="description">Manage hospital wards, bed allocation, and patient room assignments with real-time availability tracking.</p>
+                            <div class="alert alert-info">
+                                <h5><i class="fas fa-info-circle"></i> Key Features:</h5>
+                                <ul class="mb-0">
+                                    <li><strong>Add / Edit / Delete Wards and Assign Doctors / Patients</strong></li>
+                                    <li><strong>Mandatory Fields:</strong> Marked with a red <span class="text-danger">*</span></li>
+                                    <li><strong>Assignments:</strong>
+                                        <ul>
+                                            <li>Patients can only be assigned to one ward at a time</li>
+                                            <li>Doctors can be assigned multiple times to a ward, as long as they have available (unassigned) slots</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <img src="./img/ward.png" alt="Ward Management" class="feature-image">
+                            <img src="./img/ward1.png" alt="Ward Management" class="feature-image">
+                            <img src="./img/doc1.png" alt="Ward Management" class="feature-image">
+                            <img src="./img/doc2.png" alt="Ward Management" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-pills"></i> Drug Orders</h3>
+                            <p class="description">Pharmacy management system for ordering, tracking, and dispensing medications with inventory control.</p>
+                            <div class="alert alert-info">
+                                <h5><i class="fas fa-info-circle"></i> Key Features:</h5>
+                                <ul class="mb-0">
+                                    <li><strong>Add / Edit / Delete Drug Orders</strong></li>
+                                    <li><strong>Multiple Items:</strong> Add items using the + button and remove using the - button</li>
+                                    <li><strong>Export / Filter (Index View):</strong>
+                                        <ul>
+                                            <li><strong>Export</strong> – Download drug orders in Excel format</li>
+                                            <li><strong>Filter</strong> – Narrow down results using given fields</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <img src="./img/drug.png" alt="Drug Orders" class="feature-image">
+                        </div>
+                    </div>
+
+                    <div class="menu-section" id="clinical-reports">
+                        <h2><i class="fas fa-heartbeat"></i> Clinical Reports</h2>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-child"></i> Child Vitality Index</h3>
+                            <p class="description">Track and monitor child development metrics and vitality scores for pediatric patients.</p>
+                            <div class="alert alert-info">
+                                <h5><i class="fas fa-info-circle"></i> Key Features:</h5>
+                                <ul class="mb-0">
+                                    <li><strong>Add / Edit / Delete CVI reports</strong></li>
+                                    <li><strong>Mandatory Fields:</strong> Marked with a red <span class="text-danger">*</span></li>
+                                </ul>
+                            </div>
+                            <img src="./img/cvi.png" alt="Child Vitality Index" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-file-medical-alt"></i> Initial Evaluation</h3>
+                            <p class="description">Comprehensive initial patient evaluation forms with medical history, symptoms, and preliminary assessments.</p>
+                            <div class="alert alert-info">
+                                <h5><i class="fas fa-info-circle"></i> Key Features:</h5>
+                                <ul class="mb-0">
+                                    <li><strong>Add / Edit / Delete Initial Evaluation reports</strong></li>
+                                    <li><strong>Mandatory Fields:</strong> Marked with a red <span class="text-danger">*</span></li>
+                                    <li><strong>Multiple Items:</strong> Add multiple items with the + button and remove using the trash bin icon</li>
+                                </ul>
+                            </div>
+                            <img src="./img/initial eval.png" alt="Initial Evaluation" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-notes-medical"></i> Care Plan</h3>
+                            <p class="description">Create and manage personalized care plans for patients with treatment goals and progress tracking.</p>
+                            <img src="./img/careplan.png" alt="Care Plan" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-prescription-bottle-alt"></i> Lab Request</h3>
+                            <p class="description">Generate and track laboratory test requests with automated result notifications.</p>
+                            <div class="alert alert-info">
+                                <h5><i class="fas fa-info-circle"></i> Key Features:</h5>
+                                <ul class="mb-0">
+                                    <li><strong>Add / Edit / Delete Lab Requests</strong></li>
+                                    <li><strong>Mandatory Fields:</strong> Marked with a red <span class="text-danger">*</span></li>
+                                </ul>
+                            </div>
+                            <img src="./img/labreq1.png" alt="Lab Requests" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-vial"></i> Lab Report</h3>
+                            <p class="description">View and manage laboratory test results with historical tracking and trend analysis.</p>
+                            <img src="./img/labreport.png" alt="Lab Reports" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-walking"></i> Ward Round Notes</h3>
+                            <p class="description">Document daily ward rounds with patient observations, treatment updates, and care team notes.</p>
+                            <div class="alert alert-info">
+                                <h5><i class="fas fa-info-circle"></i> Key Features:</h5>
+                                <ul class="mb-0">
+                                    <li><strong>Add / Edit / Delete Ward Round Notes</strong></li>
+                                    <li><strong>Mandatory Fields:</strong> Marked with a red <span class="text-danger">*</span></li>
+                                </ul>
+                            </div>
+                            <img src="./img/wardround.png" alt="Ward Round Notes" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-user-nurse"></i> Caregiver Daily Report</h3>
+                            <p class="description">Daily reports from caregivers documenting patient care activities, observations, and concerns.</p>
+                            <div class="alert alert-info">
+                                <h5><i class="fas fa-info-circle"></i> Key Features:</h5>
+                                <ul class="mb-0">
+                                    <li><strong>Add / Edit / Delete Caregiver Daily Reports</strong></li>
+                                    <li><strong>Mandatory Fields:</strong> Marked with a red <span class="text-danger">*</span></li>
+                                </ul>
+                            </div>
+                            <img src="./img/caregiver.png" alt="Caregiver Reports" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-hand-holding-heart"></i> Therapy Report</h3>
+                            <p class="description">Comprehensive therapy reporting system for individual and group therapy sessions.</p>
+                            <div class="alert alert-info">
+                                <h5><i class="fas fa-info-circle"></i> Key Features:</h5>
+                                <ul class="mb-0">
+                                    <li><strong>Add / Edit / Delete Therapy Reports</strong></li>
+                                    <li><strong>Session Times:</strong>
+                                        <ul>
+                                            <li><strong>Individual Therapy:</strong> Session time is automatically retrieved from doctor–patient appointment slots</li>
+                                            <li><strong>Group Therapy:</strong> Session time is retrieved from doctor–ward appointment slots</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="submenu">
+                                <div class="submenu-item">
+                                    <h4><i class="fas fa-list"></i> Individual Reports</h4>
+                                    <p class="description">Track individual patient therapy progress with detailed session notes and outcome measures.</p>
+                                </div>
+                                <div class="submenu-item">
+                                    <h4><i class="fas fa-list-alt"></i> Group Reports</h4>
+                                    <p class="description">Manage group therapy sessions with attendance tracking and group progress metrics.</p>
+                                </div>
+                                <div class="submenu-item">
+                                    <h4><i class="fas fa-plus-circle"></i> Add Individual</h4>
+                                    <p class="description">Create new individual therapy session records with assessment tools and treatment plans.</p>
+                                </div>
+                                <div class="submenu-item">
+                                    <h4><i class="fas fa-plus-square"></i> Add Group</h4>
+                                    <p class="description">Schedule and document new group therapy sessions with participant management.</p>
+                                </div>
+                            </div>
+                            <img src="./img/therapy.png" alt="Therapy Reports" class="feature-image">
+                            <img src="./img/single.png" alt="Therapy Reports" class="feature-image">
+                            <img src="./img/therapyg.png" alt="Therapy Reports" class="feature-image">
+                            <img src="./img/group.png" alt="Therapy Reports" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-calendar-check"></i> Weekly Wellness Check</h3>
+                            <p class="description">Regular wellness monitoring system with comprehensive health assessments and trend tracking.</p>
+                            <div class="alert alert-info">
+                                <h5><i class="fas fa-info-circle"></i> Key Features:</h5>
+                                <ul class="mb-0">
+                                    <li><strong>Add / Edit / Delete Weekly Wellness Reports</strong></li>
+                                    <li><strong>Mandatory Fields:</strong> Marked with a red <span class="text-danger">*</span></li>
+                                    <li><strong>Report Generation:</strong> Generates a report of completed wellness checks and identifies patients without a check</li>
+                                </ul>
+                            </div>
+                            <div class="submenu">
+                                <div class="submenu-item">
+                                    <h4><i class="fas fa-list-ul"></i> All Checks</h4>
+                                    <p class="description">View all wellness checks with filtering options and status tracking.</p>
+                                </div>
+                                <div class="submenu-item">
+                                    <h4><i class="fas fa-chart-bar"></i> Weekly Report</h4>
+                                    <p class="description">Generate comprehensive weekly wellness reports with analytics and insights.</p>
+                                </div>
+                            </div>
+                            <img src="./img/weeklywellness.png" alt="Weekly Wellness Check" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-file-medical"></i> Medical Referrals</h3>
+                            <p class="description">Manage patient referrals to specialists and external healthcare providers with tracking and follow-up.</p>
+                            <div class="alert alert-info">
+                                <h5><i class="fas fa-info-circle"></i> Key Features:</h5>
+                                <ul class="mb-0">
+                                    <li><strong>Add / Edit / Delete Medical Referrals</strong></li>
+                                    <li><strong>Mandatory Fields:</strong> Marked with a red <span class="text-danger">*</span></li>
+                                </ul>
+                            </div>
+                            <img src="./img/medicalref.png" alt="Medical Referrals" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-x-ray"></i> Radiology Requests</h3>
+                            <p class="description">Request and track radiology procedures including X-rays, CT scans, MRIs, and other imaging services.</p>
+                            <div class="alert alert-info">
+                                <h5><i class="fas fa-info-circle"></i> Key Features:</h5>
+                                <ul class="mb-0">
+                                    <li><strong>Add / Edit / Delete Radiology Requests</strong></li>
+                                    <li><strong>Mandatory Fields:</strong> Marked with a red <span class="text-danger">*</span></li>
+                                </ul>
+                            </div>
+                            <img src="./img/radrequest.png" alt="Radiology Requests" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-address-card"></i> Nursing Cardex</h3>
+                            <p class="description">Digital nursing cardex system for patient care documentation, medication administration, and shift handovers.</p>
+                            <div class="alert alert-info">
+                                <h5><i class="fas fa-info-circle"></i> Key Features:</h5>
+                                <ul class="mb-0">
+                                    <li><strong>Add / Edit / Delete Nursing Cardex entries</strong></li>
+                                    <li><strong>Mandatory Fields:</strong> Marked with a red <span class="text-danger">*</span></li>
+                                </ul>
+                            </div>
+                            <img src="./img/nursing cardex.png" alt="Nursing Cardex" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-trophy"></i> Clinical Leaderboard</h3>
+                            <p class="description">Performance tracking system that displays clinical staff activities and rankings based on actual data from the system.</p>
+                            <div class="alert alert-success">
+                                <h5><i class="fas fa-chart-line"></i> How Clinical Leaderboard Works:</h5>
+                                <p>The Clinical Leaderboard automatically tracks and ranks clinical staff based on their documented activities within the system. It provides real-time performance metrics and detailed activity breakdowns.</p>
+                                
+                                <h6><i class="fas fa-users"></i> Eligible Providers:</h6>
+                                <p>The leaderboard includes staff with the following roles: Doctor, Nurse, Admin, Super Admin, and Physiotherapist.</p>
+                                
+                                <h6><i class="fas fa-calculator"></i> Metrics Tracked:</h6>
+                                <ul>
+                                    <li><strong>Patients Seen:</strong> Count of unique patients interacted with across all activities</li>
+                                    <li><strong>Appointments Conducted:</strong> Total number of patient appointments completed</li>
+                                    <li><strong>Clinical Reports Submitted:</strong> Combined total of all clinical documentation including:
+                                        <ul>
+                                            <li>Therapy Reports (by doctor_id)</li>
+                                            <li>Prescriptions (by doctor_id)</li>
+                                            <li>Lab Requests (by doctor_id)</li>
+                                            <li>Radiology Requests (by doctor_id)</li>
+                                            <li>Nursing Cardexes (by doctor_id)</li>
+                                            <li>Drug Orders (by doctor_id)</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                
+                                <h6><i class="fas fa-filter"></i> Filtering Options:</h6>
+                                <ul>
+                                    <li><strong>Date Range:</strong> Filter by start and end dates (defaults to last 30 days)</li>
+                                    <li><strong>Provider:</strong> Filter by specific provider or view all providers</li>
+                                    <li><strong>Automatic Updates:</strong> Rankings update automatically based on filtered criteria</li>
+                                </ul>
+                                
+                                <h6><i class="fas fa-eye"></i> Detailed View:</h6>
+                                <p>Click "View Details" for any provider to see comprehensive breakdown including:</p>
+                                <ul>
+                                    <li><strong>Appointments Conducted:</strong> Date, time, patient, and problem description</li>
+                                    <li><strong>Therapy Reports:</strong> Date, type, patient, and notes</li>
+                                    <li><strong>Prescriptions:</strong> Date, patient, medication, and dosage</li>
+                                    <li><strong>Lab Requests:</strong> Request date, patient, test type, and status</li>
+                                    <li><strong>Radiology Requests:</strong> Request date, patient, procedure, and status</li>
+                                    <li><strong>Nursing Cardexes:</strong> Date, patient, shift, and notes</li>
+                                    <li><strong>Drug Orders:</strong> Date, patient, medication, and status</li>
+                                </ul>
+                                
+                                <h6><i class="fas fa-sort-amount-down"></i> Ranking System:</h6>
+                                <ul>
+                                    <li><strong>Primary Sort:</strong> Ranked by "Clinical Reports Submitted" in descending order</li>
+                                    <li><strong>Display Threshold:</strong> Only shows providers with at least one activity (reports, patients seen, or appointments)</li>
+                                    <li><strong>Real-time Data:</strong> All data is pulled directly from the system tables in real-time</li>
+                                </ul>
+                            </div>
+                            <img src="./img/clinical board.png" alt="Clinical Leaderboard" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-pills"></i> Prescription</h3>
+                            <p class="description">Electronic prescription management with drug interaction checks, dosage calculations, and pharmacy integration.</p>
+                            <img src="./img/prescription.png" alt="Prescriptions" class="feature-image">
+                        </div>
+                    </div>
+
+                    <div class="menu-section" id="laboratory-management">
+                        <h2><i class="fas fa-flask"></i> Laboratory Management</h2>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-vial"></i> Lab Report</h3>
+                            <p class="description">Comprehensive laboratory report management with result entry, quality control, and report distribution.</p>
+                            <img src="./img/labreport.png" alt="Lab Report Management" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-crop-alt"></i> Lab Report Templates</h3>
+                            <p class="description">Create and customize laboratory report templates for different test types and departments.</p>
+                            <img src="./img/lab template.png" alt="Lab Report Templates" class="feature-image">
+                        </div>
+                    </div>
+
+                    <div class="menu-section" id="settings">
+                        <h2><i class="fas fa-cogs"></i> Settings</h2>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-cube"></i> Role Management</h3>
+                            <p class="description">Define user roles and permissions to control access to different system features and patient data.</p>
+                            <img src="./img/roles.png" alt="Role Management" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-users"></i> User Management</h3>
+                            <p class="description">Manage user accounts, credentials, and access rights with audit trails and activity monitoring.</p>
+                            <img src="./img/users.png" alt="User Management" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-globe"></i> Application Settings</h3>
+                            <p class="description">Configure system-wide settings, integrations, and administrative preferences.</p>
+                            <span class="badge">Super Admin Only</span>
+                            <img src="./img/config.png" alt="Application Settings" class="feature-image">
+                        </div>
+                        
+                        <div class="menu-item">
+                            <h3><i class="fas fa-align-left"></i> General Settings</h3>
+                            <p class="description">Configure general system settings including hospital information, preferences, and default values.</p>
+                            <img src="./img/general.png" alt="General Settings" class="feature-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="container">
+            <!-- <div class="row">
+                <div class="col-md-6">
+                    <h4><i class="fas fa-info-circle"></i> About This Guide</h4>
+                    <p>This user guide provides comprehensive documentation for the OVI Hospital Management System. For additional support or questions, please contact your system administrator.</p>
+                </div>
+                <div class="col-md-6">
+                    <h4><i class="fas fa-phone"></i> Support</h4>
+                    <p><strong>Technical Support:</strong> Contact IT Department<br>
+                    <strong>Training:</strong> Schedule training sessions through HR<br>
+                    <strong>Version:</strong> 1.0.0</p>
+                </div>
+            </div> -->
+            <hr>
+            <div class="text-center">
+                <p>&copy; 2025 OVI Hospital Management System. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add active state to menu items on scroll
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('.menu-section');
+            const navLinks = document.querySelectorAll('.toc a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').slice(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

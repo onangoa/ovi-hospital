@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HkAttendance;
 use Illuminate\Http\Request;
 use Shaykhnazar\HikvisionIsapi\DTOs\Person;
 use Shaykhnazar\HikvisionIsapi\Enums\UserType;
@@ -640,6 +641,9 @@ class HikvisionController extends Controller
             // Log the alert
             Log::info('Hikvision alert received', $alert);
             
+            // Save to hk_attendance table
+            $this->saveAlertToAttendance($alert);
+            
             return response()->json([
                 'success' => true,
                 'message' => 'Alert stored successfully'
@@ -673,6 +677,62 @@ class HikvisionController extends Controller
                 'success' => false,
                 'message' => $e->getMessage()
             ]);
+        }
+    }
+
+    /**
+     * Save alert to hk_attendance table
+     */
+    private function saveAlertToAttendance($alert)
+    {
+        try {
+            $accessEvent = $alert['AccessControllerEvent'] ?? [];
+            $serialNo = $accessEvent['serialNo'] ?? null;
+
+            // Check if this alert already exists in the database
+            if ($serialNo && HkAttendance::where('serial_no', $serialNo)->exists()) {
+                Log::info("Alert with serial no {$serialNo} already exists in database, skipping...");
+                return;
+            }
+
+            // Parse the date time
+            $dateTime = null;
+            if (isset($alert['dateTime'])) {
+                try {
+                    $dateTime = \Carbon\Carbon::parse($alert['dateTime']);
+                } catch (\Exception $e) {
+                    Log::error('Error parsing alert date time: ' . $e->getMessage());
+                }
+            }
+
+            // Create attendance record
+            HkAttendance::create([
+                'ip_address' => $alert['ipAddress'] ?? null,
+                'port_no' => $alert['portNo'] ?? null,
+                'protocol' => $alert['protocol'] ?? null,
+                'date_time' => $dateTime,
+                'event_type' => $alert['eventType'] ?? null,
+                'event_state' => $alert['eventState'] ?? null,
+                'event_description' => $alert['eventDescription'] ?? null,
+                'device_name' => $accessEvent['deviceName'] ?? null,
+                'major_event_type' => $accessEvent['majorEventType'] ?? null,
+                'sub_event_type' => $accessEvent['subEventType'] ?? null,
+                'card_type' => $accessEvent['cardType'] ?? null,
+                'card_reader_no' => $accessEvent['cardReaderNo'] ?? null,
+                'door_no' => $accessEvent['doorNo'] ?? null,
+                'employee_no_string' => $accessEvent['employeeNoString'] ?? null,
+                'serial_no' => $serialNo,
+                'user_type' => $accessEvent['userType'] ?? null,
+                'attendance_status' => $accessEvent['attendanceStatus'] ?? null,
+                'status_value' => $accessEvent['statusValue'] ?? null,
+                'pictures_number' => $accessEvent['picturesNumber'] ?? null,
+                'pure_pwd_verify_enable' => $accessEvent['purePwdVerifyEnable'] ?? null,
+                'raw_data' => $alert,
+            ]);
+
+            Log::info("Alert saved to hk_attendance table (serial no: {$serialNo})");
+        } catch (\Exception $e) {
+            Log::error('Error saving alert to hk_attendance: ' . $e->getMessage());
         }
     }
 }

@@ -1,0 +1,16 @@
+{
+    "name": "OVI Childrens Hospital",
+    "short_name": "LPT",
+    "background_color": "#EBA687",
+    "display": "fullscreen",
+    "description": "OVI Childrens Hospital",
+    "theme_color": "#EBA687",
+    "start_url": "/",
+    "icons": [
+        {
+            "src": "logo.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

@@ -7,6 +7,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/favicon.png') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="site-url" content="{{ url('/') }}">
+    @PwaHead
     <title>
         {{ $ApplicationSetting->item_short_name }}
         @if (isset($title) && !empty($title))
@@ -63,5 +64,6 @@
 @include('thirdparty.js_back_footer')
 @yield('script')
 @stack('footer')
+@RegisterServiceWorkerScript
 </body>
 </html>

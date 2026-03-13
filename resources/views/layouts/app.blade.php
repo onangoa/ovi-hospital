@@ -6,7 +6,7 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
+    @PwaHead
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
@@ -76,5 +76,6 @@
     </div>
     <script src="{{ asset('assets/js/custom/layouts/header.js') }}"></script>
     <script src="{{ asset('assets/js/custom/vital-signs.js') }}"></script>
+    @RegisterServiceWorkerScript
 </body>
 </html>

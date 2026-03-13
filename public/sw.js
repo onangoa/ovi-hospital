@@ -4,7 +4,9 @@ const CACHE_NAME = "offline-cache-v1";
 const OFFLINE_URL = '/offline.html';
 //
 const filesToCache = [
-    OFFLINE_URL
+    OFFLINE_URL,
+    'https://ovihospital.co.ke/doctor-details',
+    '/doctor-details/create'
 ];
 
 self.addEventListener("install", (event) => {

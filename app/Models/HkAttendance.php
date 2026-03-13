@@ -16,6 +16,8 @@ class HkAttendance extends Model
      *
      * @var array
      */
+    protected $table = 'hk_attendance';
+
     protected $fillable = [
         'ip_address',
         'port_no',

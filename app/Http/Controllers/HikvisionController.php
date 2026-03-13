@@ -63,8 +63,8 @@ class HikvisionController extends Controller
             $notificationHosts = $this->eventNotificationService->getAllHttpHosts();
 
             // Get system users for adding to device
-            $users = User::where('company_id', Session::get('company_id'))
-                ->where('status', 'active')
+            $users = User::where('company_id', session('company_id'))
+                ->where('status', '1')
                 ->get();
 
             return view('settings.hikvision.index', compact(
@@ -598,13 +598,27 @@ class HikvisionController extends Controller
     }
 
     /**
-     * Get recent alerts (cached)
+     * Get recent alerts from hk_attendance table
      */
     public function getRecentAlerts()
     {
         try {
-            $alerts = cache()->get('hikvision_alerts', []);
-            
+            $alerts = HkAttendance::orderBy('date_time', 'desc')
+                ->limit(100)
+                ->get()
+                ->map(function ($alert) {
+                    return [
+                        'date_time' => $alert->date_time ? $alert->date_time->format('Y-m-d H:i:s') : null,
+                        'device' => $alert->device_name,
+                        'employee_no' => $alert->employee_no_string,
+                        'event_type' => $alert->event_description ?? $alert->getEventDescriptionAttribute(),
+                        'status' => $alert->attendance_status,
+                        'event_category' => $alert->event_type,
+                        'id' => $alert->id,
+                        'raw_data' => $alert->raw_data,
+                    ];
+                });
+
             return response()->json([
                 'success' => true,
                 'data' => $alerts

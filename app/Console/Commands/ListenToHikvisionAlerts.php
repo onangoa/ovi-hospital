@@ -40,94 +40,137 @@ class ListenToHikvisionAlerts extends Command
         $password = $deviceConfig['password'];
         $protocol = $deviceConfig['protocol'];
 
-        $url = "{$protocol}://{$ip}:{$port}/ISAPI/Event/notification/alertStream";
+        // $url = "{$protocol}://{$ip}:{$port}/ISAPI/Event/notification/alertStream";
+        $url = "{$protocol}://{$ip}/ISAPI/Event/notification/alertStream";
 
         $this->info("Connecting to: {$url}");
 
+        // Buffer to accumulate stream data
+        $buffer = '';
+        $processedSerials = [];
+
         while (true) {
             try {
-                $this->info('Fetching alerts...');
+                $this->info('Connecting to alert stream...');
+                
+                // Reset buffer for new connection
+                $buffer = '';
+                $dataReceived = false;
+
+                $headers = [
+                    'Connection: keep-alive',
+                    'Accept: */*',
+                    'User-Agent: curl/7.68.0',
+                ];
 
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $url);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
                 curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
                 curl_setopt($ch, CURLOPT_USERPWD, "{$username}:{$password}");
-                curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 0); // No timeout for streaming
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30); // Only timeout connection
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $deviceConfig['verify_ssl']);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $deviceConfig['verify_ssl']);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($ch, CURLOPT_FORBID_REUSE, false);
+                curl_setopt($ch, CURLOPT_FRESH_CONNECT, false);
+                curl_setopt($ch, CURLOPT_WRITEFUNCTION, function($ch, $data) use (&$buffer, &$processedSerials, &$dataReceived) {
+                    $buffer .= $data;
+                    $dataReceived = true;
+                    
+                    $this->info("Received " . strlen($data) . " bytes (total buffer: " . strlen($buffer) . " bytes)");
+                    $this->line("Data preview: " . substr($data, 0, 100));
+                    
+                    // Try to parse complete alerts from buffer
+                    $alerts = $this->parseAlertStream($buffer);
+                    
+                    if (!empty($alerts)) {
+                        $this->info("Found " . count($alerts) . " alert(s) in buffer");
+                        
+                        // Get existing alerts from cache
+                        $existingAlerts = Cache::get('hikvision_alerts', []);
+                        
+                        // Process each new alert
+                        foreach ($alerts as $alert) {
+                            $serialNo = $alert['AccessControllerEvent']['serialNo'] ?? null;
+                            
+                            if ($serialNo && !in_array($serialNo, $processedSerials)) {
+                                // Check if this alert already exists in cache
+                                $exists = false;
+                                foreach ($existingAlerts as $existing) {
+                                    if (isset($existing['AccessControllerEvent']['serialNo']) && 
+                                        $existing['AccessControllerEvent']['serialNo'] === $serialNo) {
+                                        $exists = true;
+                                        break;
+                                    }
+                                }
+                                
+                                if (!$exists) {
+                                    array_unshift($existingAlerts, $alert);
+                                    
+                                    // Log the alert
+                                    $employeeNo = $alert['AccessControllerEvent']['employeeNoString'] ?? 'unknown';
+                                    $eventDescription = $this->getEventDescription($alert['AccessControllerEvent']['subEventType'] ?? 0);
+                                    $this->info("Alert - Employee: {$employeeNo}, Event: {$eventDescription}, Serial: {$serialNo}");
+                                    Log::info("Hikvision alert - Employee: {$employeeNo}, Event: {$eventDescription}, Serial: {$serialNo}");
+                                    
+                                    // Save to hk_attendance table
+                                    $this->saveAlertToAttendance($alert);
+                                }
+                                
+                                // Mark as processed
+                                $processedSerials[] = $serialNo;
+                            }
+                        }
+                        
+                        // Keep only last 100 alerts
+                        $existingAlerts = array_slice($existingAlerts, 0, 100);
+                        
+                        // Store in cache for 24 hours
+                        Cache::put('hikvision_alerts', $existingAlerts, now()->addHours(24));
+                        
+                        // Clear processed alerts from buffer
+                        // Find the last complete alert and keep everything after it
+                        $lastBoundary = strrpos($buffer, '--boundary');
+                        if ($lastBoundary !== false) {
+                            $buffer = substr($buffer, $lastBoundary);
+                        }
+                    }
+                    
+                    return strlen($data);
+                });
                 
-                $response = curl_exec($ch);
+                $result = curl_exec($ch);
                 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                 $error = curl_error($ch);
                 curl_close($ch);
 
+                $this->info("Connection closed. HTTP Code: {$httpCode}, Error: " . ($error ?: 'none') . ", Data received: " . ($dataReceived ? 'yes' : 'no'));
+                $this->line("Final buffer content (first 200 chars): " . substr($buffer, 0, 200));
+
                 if ($error) {
                     $this->error("CURL error: {$error}");
                     Log::error('Hikvision alert listener CURL error: ' . $error);
-                    sleep(10);
+                    sleep(5);
                     continue;
                 }
 
                 if ($httpCode !== 200) {
                     $this->error("HTTP error: {$httpCode}");
                     Log::error('Hikvision alert listener HTTP error: ' . $httpCode);
-                    sleep(10);
+                    sleep(5);
                     continue;
                 }
 
-                // Parse the response
-                $alerts = $this->parseAlertStream($response);
-
-                if (!empty($alerts)) {
-                    $this->info("Received " . count($alerts) . " alert(s)");
-                    
-                    // Get existing alerts
-                    $existingAlerts = Cache::get('hikvision_alerts', []);
-                    
-                    // Add new alerts at the beginning
-                    foreach (array_reverse($alerts) as $alert) {
-                        // Check if this alert already exists (by serialNo)
-                        $exists = false;
-                        $serialNo = $alert['AccessControllerEvent']['serialNo'] ?? null;
-                        
-                        if ($serialNo) {
-                            foreach ($existingAlerts as $existing) {
-                                if (isset($existing['AccessControllerEvent']['serialNo']) && 
-                                    $existing['AccessControllerEvent']['serialNo'] === $serialNo) {
-                                    $exists = true;
-                                    break;
-                                }
-                            }
-                        }
-                        
-                        if (!$exists) {
-                            array_unshift($existingAlerts, $alert);
-                            
-                            // Log the alert
-                            $employeeNo = $alert['AccessControllerEvent']['employeeNoString'] ?? 'unknown';
-                            $eventDescription = $this->getEventDescription($alert['AccessControllerEvent']['subEventType'] ?? 0);
-                            Log::info("Hikvision alert - Employee: {$employeeNo}, Event: {$eventDescription}");
-                            
-                            // Save to hk_attendance table
-                            $this->saveAlertToAttendance($alert);
-                        }
-                    }
-                    
-                    // Keep only last 100 alerts
-                    $existingAlerts = array_slice($existingAlerts, 0, 100);
-                    
-                    // Store in cache for 24 hours
-                    Cache::put('hikvision_alerts', $existingAlerts, now()->addHours(24));
-                }
-
-                // Wait before next poll
+                // Wait before reconnecting
+                $this->info("Waiting 5 seconds before reconnecting...");
                 sleep(5);
 
             } catch (\Exception $e) {
                 $this->error("Error: {$e->getMessage()}");
                 Log::error('Hikvision alert listener error: ' . $e->getMessage());
-                sleep(10);
+                sleep(5);
             }
         }
     }

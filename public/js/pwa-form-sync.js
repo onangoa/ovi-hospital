@@ -208,6 +208,54 @@ async function displayPendingCount() {
     }
 }
 
+/**
+ * Trigger manual sync of queued submissions
+ */
+async function triggerManualSync() {
+    try {
+        const queued = await getQueuedSubmissions();
+        if (queued.length === 0) {
+            console.log('No pending submissions to sync');
+            return;
+        }
+        
+        console.log(`Syncing ${queued.length} pending submissions...`);
+        
+        for (const item of queued) {
+            try {
+                const response = await fetch(item.url, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: new URLSearchParams(item.formData).toString(),
+                    credentials: 'include',
+                });
+                
+                if (response.ok) {
+                    await clearSubmission(item.id || item.key);
+                    console.log('[PWA] Synced form submission successfully:', item.url);
+                } else {
+                    console.error('[PWA] Sync failed, status:', response.status, 'for:', item.url);
+                }
+            } catch (err) {
+                console.error('[PWA] Sync network error for:', item.url, err);
+            }
+        }
+        
+        // Check remaining submissions
+        const remaining = await getQueuedSubmissions();
+        if (remaining.length === 0) {
+            showOfflineNotification('All pending forms have been synced successfully!', 'info');
+        } else {
+            showOfflineNotification(`${remaining.length} form(s) failed to sync. Will retry later.`, 'error');
+        }
+    } catch (err) {
+        console.error('[PWA] Manual sync error:', err);
+    }
+}
+
 // ────────────────────────────────────────────────
 // Event Listeners
 // ────────────────────────────────────────────────
@@ -223,6 +271,8 @@ if (document.readyState === 'loading') {
 window.addEventListener('online', () => {
     console.log('Back online!');
     displayPendingCount();
+    // Trigger manual sync when coming online
+    triggerManualSync();
 });
 
 // Listen for offline events
@@ -243,5 +293,6 @@ window.PWAFormSync = {
     getQueuedSubmissions,
     clearSubmission,
     initializeFormSync,
-    displayPendingCount
+    displayPendingCount,
+    triggerManualSync
 };

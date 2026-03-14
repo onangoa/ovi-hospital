@@ -225,8 +225,37 @@ async function getQueuedSubmissions() {
     return new Promise((resolve, reject) => {
         const tx = db.transaction(STORE_NAME, 'readonly');
         const store = tx.objectStore(STORE_NAME);
-        const request = store.getAll();
-        request.onsuccess = () => resolve(request.result);
+        const request = store.getAllKeys();
+        request.onsuccess = () => {
+            const keys = request.result;
+            const items = [];
+            let pending = keys.length;
+            
+            if (pending === 0) {
+                resolve([]);
+                return;
+            }
+            
+            keys.forEach(key => {
+                const getRequest = store.get(key);
+                getRequest.onsuccess = () => {
+                    items.push({
+                        id: key,
+                        ...getRequest.result
+                    });
+                    pending--;
+                    if (pending === 0) {
+                        resolve(items);
+                    }
+                };
+                getRequest.onerror = () => {
+                    pending--;
+                    if (pending === 0) {
+                        resolve(items);
+                    }
+                };
+            });
+        };
         request.onerror = () => reject(request.error);
     });
 }
@@ -253,9 +282,28 @@ self.addEventListener('sync', (event) => {
     }
 });
 
+// Listen for messages from clients to trigger sync
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'SYNC_FORMS') {
+        event.waitUntil(
+            syncFormSubmissions().then(() => {
+                // Notify all clients that sync is complete
+                self.clients.matchAll().then(clients => {
+                    clients.forEach(client => {
+                        client.postMessage({
+                            type: 'SYNC_COMPLETE'
+                        });
+                    });
+                });
+            })
+        );
+    }
+});
+
 async function syncFormSubmissions() {
     try {
         const queued = await getQueuedSubmissions();
+        console.log('[SW] Starting sync for', queued.length, 'submissions');
 
         for (const item of queued) {
             try {
@@ -267,7 +315,7 @@ async function syncFormSubmissions() {
                 });
 
                 if (response.ok) {
-                    await clearSubmission(item.id || item.key);
+                    await clearSubmission(item.id);
                     console.log('[SW] Synced form submission successfully:', item.url);
                 } else {
                     console.error('[SW] Sync failed, status:', response.status, 'for:', item.url);

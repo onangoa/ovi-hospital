@@ -45,8 +45,37 @@ async function getQueuedSubmissions() {
     return new Promise((resolve, reject) => {
         const tx = db.transaction(STORE_NAME1, 'readonly');
         const store = tx.objectStore(STORE_NAME1);
-        const request = store.getAll();
-        request.onsuccess = () => resolve(request.result);
+        const request = store.getAllKeys();
+        request.onsuccess = () => {
+            const keys = request.result;
+            const items = [];
+            let pending = keys.length;
+            
+            if (pending === 0) {
+                resolve([]);
+                return;
+            }
+            
+            keys.forEach(key => {
+                const getRequest = store.get(key);
+                getRequest.onsuccess = () => {
+                    items.push({
+                        id: key,
+                        ...getRequest.result
+                    });
+                    pending--;
+                    if (pending === 0) {
+                        resolve(items);
+                    }
+                };
+                getRequest.onerror = () => {
+                    pending--;
+                    if (pending === 0) {
+                        resolve(items);
+                    }
+                };
+            });
+        };
         request.onerror = () => reject(request.error);
     });
 }
@@ -221,6 +250,20 @@ async function triggerManualSync() {
         
         console.log(`Syncing ${queued.length} pending submissions...`);
         
+        // Try to use service worker for sync first
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+            try {
+                navigator.serviceWorker.controller.postMessage({
+                    type: 'SYNC_FORMS'
+                });
+                console.log('[PWA] Sync request sent to service worker');
+                return;
+            } catch (err) {
+                console.warn('[PWA] Failed to send sync to service worker, falling back to client-side sync:', err);
+            }
+        }
+        
+        // Fallback to client-side sync
         for (const item of queued) {
             try {
                 const response = await fetch(item.url, {
@@ -234,7 +277,7 @@ async function triggerManualSync() {
                 });
                 
                 if (response.ok) {
-                    await clearSubmission(item.id || item.key);
+                    await clearSubmission(item.id);
                     console.log('[PWA] Synced form submission successfully:', item.url);
                 } else {
                     console.error('[PWA] Sync failed, status:', response.status, 'for:', item.url);
@@ -271,8 +314,10 @@ if (document.readyState === 'loading') {
 window.addEventListener('online', () => {
     console.log('Back online!');
     displayPendingCount();
-    // Trigger manual sync when coming online
-    triggerManualSync();
+    // Trigger manual sync when coming online with a small delay to ensure network is ready
+    setTimeout(() => {
+        triggerManualSync();
+    }, 1000);
 });
 
 // Listen for offline events
@@ -280,6 +325,16 @@ window.addEventListener('offline', () => {
     console.log('You are now offline');
     showOfflineNotification('You are now offline. Forms will be saved and synced when you are back online.', 'info');
 });
+
+// Listen for messages from service worker
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('message', (event) => {
+        if (event.data && event.data.type === 'SYNC_COMPLETE') {
+            console.log('[PWA] Service worker sync complete');
+            displayPendingCount();
+        }
+    });
+}
 
 // Check for pending submissions on page load
 window.addEventListener('load', displayPendingCount);

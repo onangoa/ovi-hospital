@@ -65,5 +65,6 @@
 @yield('script')
 @stack('footer')
 @RegisterServiceWorkerScript
+<script src="{{ asset('js/pwa-form-sync.js') }}"></script>
 </body>
 </html>

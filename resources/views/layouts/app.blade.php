@@ -77,5 +77,6 @@
     <script src="{{ asset('assets/js/custom/layouts/header.js') }}"></script>
     <script src="{{ asset('assets/js/custom/vital-signs.js') }}"></script>
     @RegisterServiceWorkerScript
+    <script src="{{ asset('js/pwa-form-sync.js') }}"></script>
 </body>
 </html>

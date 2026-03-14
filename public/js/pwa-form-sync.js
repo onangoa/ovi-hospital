@@ -9,11 +9,11 @@
 
 const DB_NAME1 = 'offline-queue';
 const STORE_NAME1 = 'form-submissions';
-const DB_VERSION = 1;
+const DB_VERSION1 = 1;
 
 function openDB() {
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open(DB_NAME1, DB_VERSION);
+        const request = indexedDB.open(DB_NAME1, DB_VERSION1);
         request.onerror = () => reject(request.error);
         request.onsuccess = () => resolve(request.result);
         request.onupgradeneeded = (event) => {

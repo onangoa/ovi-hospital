@@ -259,7 +259,7 @@ async function displayPendingCount() {
  */
 async function isActuallyOnline() {
     try {
-        const response = await fetch('/favicon.ico', {
+        const response = await fetch('/assets/images/favicon.png', {
             method: 'HEAD',
             cache: 'no-cache'
         });

@@ -286,12 +286,18 @@ self.addEventListener('sync', (event) => {
 self.addEventListener('message', (event) => {
     if (event.data && event.data.type === 'SYNC_FORMS') {
         event.waitUntil(
-            syncFormSubmissions().then(() => {
-                // Notify all clients that sync is complete
-                self.clients.matchAll().then(clients => {
-                    clients.forEach(client => {
-                        client.postMessage({
-                            type: 'SYNC_COMPLETE'
+            isActuallyOnline().then(online => {
+                if (!online) {
+                    console.log('[SW] Not actually online, skipping sync');
+                    return;
+                }
+                return syncFormSubmissions().then(() => {
+                    // Notify all clients that sync is complete
+                    self.clients.matchAll().then(clients => {
+                        clients.forEach(client => {
+                            client.postMessage({
+                                type: 'SYNC_COMPLETE'
+                            });
                         });
                     });
                 });
@@ -305,6 +311,9 @@ async function syncFormSubmissions() {
         const queued = await getQueuedSubmissions();
         console.log('[SW] Starting sync for', queued.length, 'submissions');
 
+        let successCount = 0;
+        let failCount = 0;
+
         for (const item of queued) {
             try {
                 const response = await fetch(item.url, {
@@ -316,17 +325,37 @@ async function syncFormSubmissions() {
 
                 if (response.ok) {
                     await clearSubmission(item.id);
+                    successCount++;
                     console.log('[SW] Synced form submission successfully:', item.url);
                 } else {
+                    failCount++;
                     console.error('[SW] Sync failed, status:', response.status, 'for:', item.url);
                     // Don't clear → will retry next sync
                 }
             } catch (err) {
+                failCount++;
                 console.error('[SW] Sync network error for:', item.url, err);
                 // Don't clear → retry later
             }
         }
+
+        console.log(`[SW] Sync complete: ${successCount} succeeded, ${failCount} failed`);
     } catch (err) {
         console.error('[SW] Sync error:', err);
+    }
+}
+
+/**
+ * Check if we're actually online by making a simple request
+ */
+async function isActuallyOnline() {
+    try {
+        const response = await fetch('/favicon.ico', {
+            method: 'HEAD',
+            cache: 'no-cache'
+        });
+        return response.ok;
+    } catch (err) {
+        return false;
     }
 }

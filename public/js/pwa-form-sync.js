@@ -30,14 +30,31 @@ async function queueSubmission(url, formData) {
     return new Promise((resolve, reject) => {
         const tx = db.transaction(STORE_NAME1, 'readwrite');
         const store = tx.objectStore(STORE_NAME1);
+        // Convert absolute URL to relative URL for better compatibility
+        const relativeUrl = convertToRelativeUrl(url);
         const request = store.add({
-            url: url,
+            url: relativeUrl,
             formData: Object.fromEntries(formData),
-            timestamp: Date.now()
+            timestamp: Date.now(),
+            retryCount: 0
         });
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
     });
+}
+
+/**
+ * Convert absolute URL to relative URL
+ */
+function convertToRelativeUrl(url) {
+    try {
+        const urlObj = new URL(url);
+        // Return pathname + search + hash (relative path)
+        return urlObj.pathname + urlObj.search + urlObj.hash;
+    } catch (e) {
+        // If URL parsing fails, return as-is
+        return url;
+    }
 }
 
 async function getQueuedSubmissions() {
@@ -238,6 +255,21 @@ async function displayPendingCount() {
 }
 
 /**
+ * Check if we're actually online by making a simple request
+ */
+async function isActuallyOnline() {
+    try {
+        const response = await fetch('/favicon.ico', {
+            method: 'HEAD',
+            cache: 'no-cache'
+        });
+        return response.ok;
+    } catch (err) {
+        return false;
+    }
+}
+
+/**
  * Trigger manual sync of queued submissions
  */
 async function triggerManualSync() {
@@ -249,6 +281,14 @@ async function triggerManualSync() {
         }
         
         console.log(`Syncing ${queued.length} pending submissions...`);
+        
+        // Check if we're actually online
+        const online = await isActuallyOnline();
+        if (!online) {
+            console.log('[PWA] Not actually online, skipping sync');
+            showOfflineNotification('Waiting for network connection...', 'info');
+            return;
+        }
         
         // Try to use service worker for sync first
         if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
@@ -264,6 +304,9 @@ async function triggerManualSync() {
         }
         
         // Fallback to client-side sync
+        let successCount = 0;
+        let failCount = 0;
+        
         for (const item of queued) {
             try {
                 const response = await fetch(item.url, {
@@ -278,11 +321,14 @@ async function triggerManualSync() {
                 
                 if (response.ok) {
                     await clearSubmission(item.id);
+                    successCount++;
                     console.log('[PWA] Synced form submission successfully:', item.url);
                 } else {
+                    failCount++;
                     console.error('[PWA] Sync failed, status:', response.status, 'for:', item.url);
                 }
             } catch (err) {
+                failCount++;
                 console.error('[PWA] Sync network error for:', item.url, err);
             }
         }
@@ -312,12 +358,13 @@ if (document.readyState === 'loading') {
 
 // Listen for online events to show pending submissions
 window.addEventListener('online', () => {
-    console.log('Back online!');
+    console.log('[PWA] Back online event detected');
     displayPendingCount();
-    // Trigger manual sync when coming online with a small delay to ensure network is ready
+    // Trigger manual sync when coming online with a longer delay to ensure network is ready
     setTimeout(() => {
+        console.log('[PWA] Triggering sync after online event');
         triggerManualSync();
-    }, 1000);
+    }, 3000);
 });
 
 // Listen for offline events
@@ -338,6 +385,17 @@ if ('serviceWorker' in navigator) {
 
 // Check for pending submissions on page load
 window.addEventListener('load', displayPendingCount);
+
+// Periodic sync check - try to sync every 30 seconds if there are pending submissions
+setInterval(async () => {
+    if (navigator.onLine) {
+        const queued = await getQueuedSubmissions();
+        if (queued.length > 0) {
+            console.log(`[PWA] Periodic check: ${queued.length} pending submissions, attempting sync`);
+            triggerManualSync();
+        }
+    }
+}, 30000);
 
 // ────────────────────────────────────────────────
 // Export functions for manual use if needed

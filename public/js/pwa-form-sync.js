@@ -8,7 +8,7 @@
 // ────────────────────────────────────────────────
 
 const DB_NAME1 = 'offline-queue';
-const STORE_NAME = 'form-submissions';
+const STORE_NAME1 = 'form-submissions';
 const DB_VERSION = 1;
 
 function openDB() {
@@ -18,8 +18,8 @@ function openDB() {
         request.onsuccess = () => resolve(request.result);
         request.onupgradeneeded = (event) => {
             const db = event.target.result;
-            if (!db.objectStoreNames.contains(STORE_NAME)) {
-                db.createObjectStore(STORE_NAME, { autoIncrement: true });
+            if (!db.objectStoreNames.contains(STORE_NAME1)) {
+                db.createObjectStore(STORE_NAME1, { autoIncrement: true });
             }
         };
     });
@@ -28,8 +28,8 @@ function openDB() {
 async function queueSubmission(url, formData) {
     const db = await openDB();
     return new Promise((resolve, reject) => {
-        const tx = db.transaction(STORE_NAME, 'readwrite');
-        const store = tx.objectStore(STORE_NAME);
+        const tx = db.transaction(STORE_NAME1, 'readwrite');
+        const store = tx.objectStore(STORE_NAME1);
         const request = store.add({
             url: url,
             formData: Object.fromEntries(formData),
@@ -43,8 +43,8 @@ async function queueSubmission(url, formData) {
 async function getQueuedSubmissions() {
     const db = await openDB();
     return new Promise((resolve, reject) => {
-        const tx = db.transaction(STORE_NAME, 'readonly');
-        const store = tx.objectStore(STORE_NAME);
+        const tx = db.transaction(STORE_NAME1, 'readonly');
+        const store = tx.objectStore(STORE_NAME1);
         const request = store.getAll();
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
@@ -54,8 +54,8 @@ async function getQueuedSubmissions() {
 async function clearSubmission(id) {
     const db = await openDB();
     return new Promise((resolve, reject) => {
-        const tx = db.transaction(STORE_NAME, 'readwrite');
-        const store = tx.objectStore(STORE_NAME);
+        const tx = db.transaction(STORE_NAME1, 'readwrite');
+        const store = tx.objectStore(STORE_NAME1);
         const request = store.delete(id);
         request.onsuccess = () => resolve();
         request.onerror = () => reject(request.error);

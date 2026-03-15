@@ -323,7 +323,7 @@ async function syncFormSubmissions() {
                     credentials: 'include',
                 });
 
-                if (response.ok) {
+                if (response.ok || response.status === 302) {
                     await clearSubmission(item.id);
                     successCount++;
                     console.log('[SW] Synced form submission successfully:', item.url);

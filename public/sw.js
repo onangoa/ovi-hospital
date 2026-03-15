@@ -316,30 +316,50 @@ async function syncFormSubmissions() {
 
         for (const item of queued) {
             try {
+
                 const response = await fetch(item.url, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
                     body: new URLSearchParams(item.formData).toString(),
                     credentials: 'include',
+                    redirect: 'manual' // important for Laravel 302 redirects
                 });
-                console.log('----------[SW] Synced form submission successfully:', item.url, response);
-                if (response.ok || response.status === 302) {
+
+                console.log('[SW] Response received:', response);
+
+                // Laravel usually returns 302 or 303 after POST
+                if (
+                    response.ok ||
+                    response.status === 302 ||
+                    response.status === 303 ||
+                    response.type === 'opaqueredirect'
+                ) {
+
                     await clearSubmission(item.id);
                     successCount++;
+
                     console.log('[SW] Synced form submission successfully:', item.url);
+
                 } else {
+
                     failCount++;
-                    console.error('[SW] Sync failed, status:', response.status, 'for:', item.url);
-                    // Don't clear → will retry next sync
+                    console.error('[SW] Sync failed with status:', response.status, 'for:', item.url);
+
                 }
+
             } catch (err) {
+
                 failCount++;
                 console.error('[SW] Sync network error for:', item.url, err);
-                // Don't clear → retry later
+
+                // do not remove → retry next sync
             }
         }
 
         console.log(`[SW] Sync complete: ${successCount} succeeded, ${failCount} failed`);
+
     } catch (err) {
         console.error('[SW] Sync error:', err);
     }

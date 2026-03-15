@@ -49,11 +49,11 @@ self.addEventListener('fetch', (event) => {
     }
 
     if (event.request.mode === 'navigate') {
-        // Navigation requests (HTML pages) → network-first, then cache, then offline fallback
+        // Navigation requests (HTML pages) → network-first, then offline fallback
         event.respondWith(
             fetch(event.request)
                 .then((networkResponse) => {
-                    // Optional: update cache with fresh version when online
+                    // Online: update cache with fresh version and return network response
                     if (networkResponse && networkResponse.status === 200) {
                         const responseToCache = networkResponse.clone();
                         caches.open(CACHE_NAME)
@@ -64,17 +64,9 @@ self.addEventListener('fetch', (event) => {
                     return networkResponse;
                 })
                 .catch(() => {
-                    // Offline → try cache first
-                    return caches.match(event.request)
-                        .then((cachedResponse) => {
-                            if (cachedResponse) {
-                                console.log('[ServiceWorker] Serving from cache:', event.request.url);
-                                return cachedResponse;
-                            }
-                            // No cached page → show offline fallback
-                            console.log('[ServiceWorker] Falling back to offline.html');
-                            return caches.match(OFFLINE_URL);
-                        });
+                    // Offline: immediately show offline fallback (no cache check)
+                    console.log('[ServiceWorker] Offline detected, serving offline.html');
+                    return caches.match(OFFLINE_URL);
                 })
         );
     } else {

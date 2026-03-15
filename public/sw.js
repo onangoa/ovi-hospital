@@ -322,7 +322,7 @@ async function syncFormSubmissions() {
                     body: new URLSearchParams(item.formData).toString(),
                     credentials: 'include',
                 });
-
+                console.log('----------[SW] Synced form submission successfully:', item.url, response);
                 if (response.ok || response.status === 302) {
                     await clearSubmission(item.id);
                     successCount++;

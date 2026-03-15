@@ -6,6 +6,8 @@ const OFFLINE_URL = '/offline.html';
 // List of URLs to precache
 const filesToCache = [
     OFFLINE_URL,
+    'https://ovihospital.co.ke/dashboard',
+    'https://ovihospital.co.ke/wards'
 ];
 
 self.addEventListener('install', (event) => {

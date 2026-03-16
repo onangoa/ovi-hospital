@@ -84,7 +84,11 @@ class RoleController extends Controller
             'name' => $request->input('name'),
             'role_for' => $request->input('role_for')
         ]);
-        $role->syncPermissions($request->input('permission'));
+        
+        // Convert permission IDs to Permission models
+        $permissions = Permission::whereIn('id', $request->input('permission'))->get();
+        $role->syncPermissions($permissions);
+        
         session()->flash('success', trans('Role Created Successfully'));
         return redirect()->route('roles.index');
     }
@@ -144,7 +148,11 @@ class RoleController extends Controller
         $role->name = $request->input('name');
         $role->role_for = $request->input('role_for');
         $role->save();
-        $role->syncPermissions($request->input('permission'));
+        
+        // Convert permission IDs to Permission models
+        $permissions = Permission::whereIn('id', $request->input('permission'))->get();
+        $role->syncPermissions($permissions);
+        
         return redirect()->route('roles.index')->with('success',trans('Role Updated Successfully'));
     }
 

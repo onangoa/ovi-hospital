@@ -359,6 +359,13 @@ if (document.readyState === 'loading') {
 // Listen for online events to show pending submissions
 window.addEventListener('online', () => {
     console.log('[PWA] Back online event detected');
+    
+    // If currently on /offline route, redirect to normal page
+    if (window.location.pathname === '/offline') {
+        console.log('[PWA] Currently on /offline route, redirecting to dashboard');
+        window.location.href = '/dashboard';
+    }
+    
     displayPendingCount();
     // Trigger manual sync when coming online with a longer delay to ensure network is ready
     setTimeout(() => {
@@ -369,7 +376,14 @@ window.addEventListener('online', () => {
 
 // Listen for offline events
 window.addEventListener('offline', () => {
-    console.log('You are now offline');
+    console.log('[PWA] You are now offline');
+    
+    // If not already on /offline route, navigate to it
+    if (window.location.pathname !== '/offline') {
+        console.log('[PWA] Navigating to /offline route');
+        window.location.href = '/offline';
+    }
+    
     showOfflineNotification('You are now offline. Forms will be saved and synced when you are back online.', 'info');
 });
 

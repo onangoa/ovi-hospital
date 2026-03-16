@@ -239,6 +239,11 @@ Route::group(['middleware' => ['auth']], function() {
     ]);
 
     Route::get('/dashboard/get-chart-data', [App\Http\Controllers\DashboardController::class, 'getChartData']);
+
+    Route::get('/offline',[
+        'uses' => 'App\Http\Controllers\OfflineController@index',
+        'as' => 'offline'
+    ]);
 });
 
 Route::group(['middleware' => ['auth']], function() {

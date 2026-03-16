@@ -22,6 +22,13 @@ $roleName = Auth::user()->getRoleNames();
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a href="{{ route('offline') }}" class="nav-link @if($c == 'offline') active @endif">
+                        <i class="nav-icon fas fa-wifi"></i>
+                        <p>{{ __('Offline Mode') }}</p>
+                    </a>
+                </li>
+
                 @canany(['hospital-department-read', 'hospital-department-create', 'hospital-department-update', 'hospital-department-delete'])
                     <li class="nav-item">
                         <a href="{{ route('hospital-departments.index') }}" class="nav-link @if($c == 'hospital-departments') active @endif">

@@ -21,3 +21,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/doctor-list', [App\Http\Controllers\DoctorDetailController::class, 'getDoctorList']);
 // Route::get('/book-schedules', [App\Http\Controllers\PatientAppointmentController::class, 'bookAppointment']);
 Route::get('/patient-details/{id}', [App\Http\Controllers\PatientDetailController::class, 'getPatientDetails']);
+// Hikvision Webhook Listener (no authentication required)
+Route::post('/hikvision/webhook', [
+    'uses' => 'App\Http\Controllers\HikvisionController@storeAlert',
+    'as' => 'hikvision.webhook'
+]);

@@ -90,7 +90,7 @@ class HikvisionController extends Controller
                 'personCount' => 0,
                 'notificationCapabilities' => null,
                 'notificationHosts' => [],
-                'users' => User::where('company_id', Session::get('company_id'))->where('status', 'active')->get()
+                'users' => User::where('company_id', Session::get('company_id'))->where('status', '1')->get()
             ]);
         }
     }
@@ -639,6 +639,18 @@ class HikvisionController extends Controller
     {
         try {
             $alert = $request->all();
+            
+            // Get employee number string
+            $employeeNoString = $alert['AccessControllerEvent']['employeeNoString'] ?? '';
+            
+            // Only post if employee number string is not empty
+            if ($employeeNoString === '') {
+                //Log::info('Hikvision alert ignored: employee number string is empty');
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Alert ignored: employee number string is empty'
+                ]);
+            }
             
             // Get existing alerts
             $alerts = cache()->get('hikvision_alerts', []);

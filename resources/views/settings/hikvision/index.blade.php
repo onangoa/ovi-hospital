@@ -372,6 +372,13 @@ $(document).ready(function() {
         }
     });
 
+    // Load recent alerts when Alert Listener tab is shown
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        if ($(e.target).attr('href') === '#nav-alerts') {
+            loadRecentAlerts();
+        }
+    });
+
     // Add user form submission
     $('#add-user-form').on('submit', function(e) {
         e.preventDefault();
@@ -628,6 +635,124 @@ function testNotification(hostId) {
         },
         error: function(xhr) {
             toastr.error('Failed to test notification');
+        }
+    });
+}
+
+// Load recent alerts
+function loadRecentAlerts() {
+    $.ajax({
+        url: '{{ route("hikvision.getRecentAlerts") }}',
+        type: 'GET',
+        success: function(response) {
+            if (response.success) {
+                displayAlerts(response.data);
+                toastr.success('Recent alerts loaded successfully');
+            } else {
+                toastr.error(response.message);
+            }
+        },
+        error: function(xhr) {
+            toastr.error('Failed to load recent alerts');
+        }
+    });
+}
+
+// Display alerts in table
+function displayAlerts(alerts) {
+    let tbody = $('#alerts-table-body');
+    tbody.empty();
+
+    if (!alerts || alerts.length === 0) {
+        tbody.html('<tr><td colspan="7" class="text-center">No alerts found</td></tr>');
+        return;
+    }
+
+    alerts.forEach(function(alert) {
+        const dateTime = alert.date_time || '-';
+        const device = alert.device || '-';
+        const employeeNo = alert.employee_no || '-';
+        const eventType = alert.event_type || '-';
+        const status = alert.status || '-';
+        const eventCategory = alert.event_category || '-';
+        const alertId = alert.id || '';
+
+        tbody.append(`
+            <tr>
+                <td>${dateTime}</td>
+                <td>${device}</td>
+                <td>${employeeNo}</td>
+                <td>${eventType}</td>
+                <td>${status}</td>
+                <td>${eventCategory}</td>
+                <td>
+                    <button type="button" class="btn btn-info btn-sm" onclick="viewAlertDetails('${alertId}')">
+                        <i class="fas fa-eye"></i> View Details
+                    </button>
+                </td>
+            </tr>
+        `);
+    });
+}
+
+// View alert details
+function viewAlertDetails(alertId) {
+    // Find the alert from the current display
+    // For now, just show a placeholder message
+    $('#alert-details-display').html('<p class="text-muted">Alert details functionality coming soon</p>');
+    $('#alert-details-modal').modal('show');
+}
+
+// Start alert listener
+function startAlertListener() {
+    $.ajax({
+        url: '{{ route("hikvision.startAlertListener") }}',
+        type: 'GET',
+        success: function(response) {
+            $('#alert-listener-status').html('<span class="badge badge-success">Running</span>');
+            $('#start-alert-listener').prop('disabled', true);
+            $('#stop-alert-listener').prop('disabled', false);
+            toastr.success('Alert listener started');
+            loadRecentAlerts();
+        },
+        error: function(xhr) {
+            toastr.error('Failed to start alert listener');
+        }
+    });
+}
+
+// Stop alert listener
+function stopAlertListener() {
+    // Since this is a long-polling endpoint, we can't really stop it from the client side
+    // This is a placeholder for future implementation
+    $('#alert-listener-status').html('<span class="badge badge-danger">Stopped</span>');
+    $('#start-alert-listener').prop('disabled', false);
+    $('#stop-alert-listener').prop('disabled', true);
+    toastr.info('Alert listener stopped (client-side only)');
+}
+
+// Clear alerts
+function clearAlerts() {
+    if (!confirm('Are you sure you want to clear all alerts?')) {
+        return;
+    }
+
+    $.ajax({
+        url: '{{ route("hikvision.clearAlerts") }}',
+        type: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(response) {
+            if (response.success) {
+                toastr.success(response.message);
+                loadRecentAlerts();
+            } else {
+                toastr.error(response.message);
+            }
+        },
+        error: function(xhr) {
+            toastr.error('Failed to clear alerts');
         }
     });
 }

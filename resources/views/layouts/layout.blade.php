@@ -66,5 +66,6 @@
 @stack('footer')
 @RegisterServiceWorkerScript
 <script src="{{ asset('js/pwa-form-sync.js') }}"></script>
+<script src="{{ asset('js/pwa-update-handler.js') }}"></script>
 </body>
 </html>

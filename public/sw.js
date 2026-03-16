@@ -51,7 +51,6 @@ const filesToCache = [
     "/radiology-requests/create",
     "/drug-orders",
     "/drug-orders/create",
-    "/dashboard",
     "/wards",
     "/wards/create"
 ];

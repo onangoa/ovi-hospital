@@ -132,7 +132,9 @@ function initializeFormSync() {
             
             const formData = new FormData(form);
             const url = form.action || window.location.href;
-            const isOnline = navigator.onLine;
+            
+            // Check if we're actually online by making a network request
+            const isOnline = await isActuallyOnline();
             
             if (isOnline) {
                 // Online → submit normally
@@ -372,6 +374,7 @@ window.addEventListener('online', () => {
         console.log('[PWA] Triggering sync after online event');
         triggerManualSync();
     }, 3000);
+    showOfflineNotification('You are now back online.', 'info');
 });
 
 // Listen for offline events
@@ -402,7 +405,9 @@ window.addEventListener('load', displayPendingCount);
 
 // Periodic sync check - try to sync every 30 seconds if there are pending submissions
 setInterval(async () => {
-    if (navigator.onLine) {
+    // Check if we're actually online by making a network request
+    const online = await isActuallyOnline();
+    if (online) {
         const queued = await getQueuedSubmissions();
         if (queued.length > 0) {
             console.log(`[PWA] Periodic check: ${queued.length} pending submissions, attempting sync`);
@@ -410,6 +415,18 @@ setInterval(async () => {
         }
     }
 }, 30000);
+
+// Periodic online status check - redirect from /offline if actually online (every 10 seconds)
+setInterval(async () => {
+    // Only check if currently on /offline route
+    if (window.location.pathname === '/offline') {
+        const online = await isActuallyOnline();
+        if (online) {
+            console.log('[PWA] Periodic check: Actually online, redirecting from /offline to dashboard');
+            window.location.href = '/dashboard';
+        }
+    }
+}, 10000);
 
 // ────────────────────────────────────────────────
 // Export functions for manual use if needed

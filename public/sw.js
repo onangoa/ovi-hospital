@@ -107,6 +107,12 @@ self.addEventListener("fetch", (event) => {
 
     if (event.request.method !== "GET") return;
 
+    // Skip caching for ping endpoint (used for online status check)
+    if (event.request.url.includes('/ping')) {
+        event.respondWith(fetch(event.request));
+        return;
+    }
+
     // PAGE NAVIGATION
     if (event.request.mode === "navigate") {
 
@@ -426,16 +432,19 @@ async function syncFormSubmissions() {
 async function isActuallyOnline() {
 
     try {
-
-        const response = await fetch("/favicon.ico", {
-            method: "HEAD",
-            cache: "no-cache"
+        // Use a timestamp to ensure we're not getting a cached response
+        const timestamp = Date.now();
+        const response = await fetch(`/ping?t=${timestamp}`, {
+            method: "GET",
+            cache: "no-store",
+            credentials: "same-origin"
         });
 
         return response.ok;
 
-    } catch {
+    } catch (err) {
 
+        console.log("[SW] Online check failed:", err.message);
         return false;
 
     }

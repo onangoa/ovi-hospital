@@ -135,6 +135,7 @@ function initializeFormSync() {
             
             // Check if we're actually online by making a network request
             const isOnline = await isActuallyOnline();
+            console.log('[PWA] Online status check result:', isOnline ? 'ONLINE' : 'OFFLINE');
             
             if (isOnline) {
                 // Online → submit normally
@@ -258,15 +259,21 @@ async function displayPendingCount() {
 
 /**
  * Check if we're actually online by making a simple request
+ * Uses a timestamp to bypass service worker cache and checks a reliable endpoint
  */
 async function isActuallyOnline() {
     try {
-        const response = await fetch('/assets/images/favicon.png', {
-            method: 'HEAD',
-            cache: 'no-cache'
+        // Use a timestamp to ensure we're not getting a cached response
+        const timestamp = Date.now();
+        const response = await fetch(`/ping?t=${timestamp}`, {
+            method: 'GET',
+            cache: 'no-store',
+            // Bypass service worker by using credentials and a unique URL
+            credentials: 'same-origin'
         });
         return response.ok;
     } catch (err) {
+        console.log('[PWA] Online check failed:', err.message);
         return false;
     }
 }

@@ -35,6 +35,11 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// Ping endpoint for online status check (PWA form sync)
+Route::get('/ping', function () {
+    return response()->json(['status' => 'ok', 'timestamp' => time()]);
+})->name('ping');
+
 Route::get('/about', function () {
     return view('frontend.about', ['contents' => json_decode(FrontEnd::find(2)->content)]);
 });

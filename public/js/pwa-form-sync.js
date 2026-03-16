@@ -357,9 +357,9 @@ async function triggerManualSync() {
 
 // Initialize when DOM is ready
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeFormSync);
+    !navigator.onLine && document.addEventListener('DOMContentLoaded', initializeFormSync);
 } else {
-    initializeFormSync();
+    !navigator.onLine && initializeFormSync();
 }
 
 // Listen for online events to show pending submissions

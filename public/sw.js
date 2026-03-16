@@ -1,6 +1,8 @@
 "use strict";
 
-const CACHE_NAME = "offline-cache-v1";
+// Version the cache with timestamp to force updates when service worker changes
+const CACHE_VERSION = new Date().toISOString().slice(0, 10); // YYYY-MM-DD format
+const CACHE_NAME = `offline-cache-v${CACHE_VERSION}`;
 const OFFLINE_URL = "/offline"; ///offline.html";
 
 // Files to precache
@@ -59,8 +61,20 @@ self.addEventListener("install", (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
-                console.log("[SW] Pre-caching files");
+                console.log("[SW] Pre-caching files with version:", CACHE_VERSION);
                 return cache.addAll(filesToCache);
+            })
+            .then(() => {
+                // Notify all clients that a new version is available
+                return self.clients.matchAll();
+            })
+            .then((clients) => {
+                clients.forEach((client) => {
+                    client.postMessage({
+                        type: "SW_UPDATE_AVAILABLE",
+                        version: CACHE_VERSION
+                    });
+                });
             })
     );
 
@@ -80,6 +94,7 @@ self.addEventListener("activate", (event) => {
         caches.keys().then((names) => {
 
             return Promise.all(
+
                 names.map((name) => {
 
                     if (name !== CACHE_NAME) {
@@ -88,8 +103,21 @@ self.addEventListener("activate", (event) => {
                     }
 
                 })
+
             );
 
+        })
+        .then(() => {
+            // Notify all clients that the new version is activated
+            return self.clients.matchAll();
+        })
+        .then((clients) => {
+            clients.forEach((client) => {
+                client.postMessage({
+                    type: "SW_ACTIVATED",
+                    version: CACHE_VERSION
+                });
+            });
         })
 
     );
@@ -370,6 +398,16 @@ self.addEventListener("message", (event) => {
 
         );
 
+    }
+
+    // Handle service worker update requests
+    if (event.data && event.data.type === "SKIP_WAITING") {
+        self.skipWaiting();
+    }
+
+    // Send cache version to clients
+    if (event.data && event.data.type === "GET_CACHE_VERSION") {
+        event.ports[0].postMessage({ version: CACHE_VERSION });
     }
 
 });

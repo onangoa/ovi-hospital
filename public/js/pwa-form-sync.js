@@ -143,10 +143,7 @@ function initializeFormSync() {
                     const response = await fetch(url, {
                         method: 'POST',
                         body: formData,
-                        credentials: 'include',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
+                        credentials: 'include'
                     });
                     
                     if (response.ok) {

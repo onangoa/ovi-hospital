@@ -212,8 +212,8 @@ class ListenToHikvisionAlerts extends Command
     {
         $eventTypes = [
             22 => 'Door Opened',
-            38 => 'Card Authentication',
-            39 => 'Fingerprint Authentication',
+            38 => 'Fingerprint Authentication',
+            39 => 'Card Authentication',
             40 => 'Face Authentication',
             41 => 'Password Authentication',
         ];

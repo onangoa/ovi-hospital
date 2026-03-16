@@ -99,12 +99,22 @@ class HkAttendance extends Model
     {
         $eventTypes = [
             22 => 'Door Opened',
-            38 => 'Card Authentication',
-            39 => 'Fingerprint Authentication',
+            38 => 'Fingerprint Authentication',
+            39 => 'Card Authentication',
             40 => 'Face Authentication',
             41 => 'Password Authentication',
         ];
 
         return $eventTypes[$this->sub_event_type] ?? 'Unknown Event';
+    }
+
+    /**
+     * Relationship to User model
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'employee_no_string', 'id');
     }
 }

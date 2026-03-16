@@ -110,6 +110,7 @@ Route::group(['middleware' => ['auth']], function() {
         'drug-orders' => App\Http\Controllers\DrugOrderController::class,
         'nursing-cardexes' => App\Http\Controllers\NursingCardexController::class,
         'vital-signs' => App\Http\Controllers\VitalSignController::class,
+        'attendance' => App\Http\Controllers\AttendanceController::class,
     ]);
 
     Route::get('/components/vital-signs', [App\Http\Controllers\ComponentController::class, 'vitalSigns'])->name('components.vitalSigns');

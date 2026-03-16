@@ -85,7 +85,7 @@
                     <ul class="list-group">
                         <li class="list-group-item">
                             <i class="fas fa-times-circle text-danger"></i> 
-                            @lang('Create new patient records')
+                            @lang('Editing existing records')
                         </li>
                         <li class="list-group-item">
                             <i class="fas fa-times-circle text-danger"></i> 

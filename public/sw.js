@@ -1,13 +1,59 @@
 "use strict";
 
 const CACHE_NAME = "offline-cache-v1";
-const OFFLINE_URL = "/offline.html";
+const OFFLINE_URL = "/offline"; ///offline.html";
 
 // Files to precache
 const filesToCache = [
     OFFLINE_URL,
+    "/hospital-departments",
+    "hospital-departments/create",
+    "/doctor-details",
+    "/doctor-details/create",
+    "/patient-details",
+    "/patient-details/create",
+    "/doctor-assignments",
+    "/doctor-assignments/create",
+    "/prescriptions",
+    "prescriptions/create",
+    "/vital-signs",
+    "/vital-signs/create",
+    "/vital-sign/clinical-forms",
+    "/lab-reports",
+    "/cvi",
+    "/cvi/create",
+    "/initial-evaluations",
+    "/initial-evaluations/create",
+    "/care-plans",
+    "/care-plans/create",
+    "/lab-requests",
+    "/lab-requests/create",
+    "/cvi",
+    "/cvi/create",
+    "/initial-evaluations",
+    "/initial-evaluations/create",
+    "/care-plans",
+    "/care-plans/create",
+    "/ward-round-notes",
+    "/ward-round-notes/create",
+    "/caregiver-daily-reports",
+    "/caregiver-daily-reports/create",
+    "/therapy-reports/individual",
+    "/individual-therapy/create",
+    "/therapy-reports/group",
+    "/group-therapy/create",
+    "/weekly-wellness-checks",
+    "/weekly-wellness-checks/create",
+    "/weekly-wellness-checks/report",
+    "/nursing-cardexes",
+    "/nursing-cardexes/create",
+    "/radiology-requests",
+    "/radiology-requests/create",
+    "/drug-orders",
+    "/drug-orders/create",
     "/dashboard",
-    "/wards"
+    "/wards",
+    "/wards/create"
 ];
 
 

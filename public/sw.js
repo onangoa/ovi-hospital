@@ -6,6 +6,7 @@ const OFFLINE_URL = "/offline"; ///offline.html";
 // Files to precache
 const filesToCache = [
     OFFLINE_URL,
+    //
    
 ];
 

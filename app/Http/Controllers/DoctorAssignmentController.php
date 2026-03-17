@@ -46,8 +46,8 @@ class DoctorAssignmentController extends Controller
                             ->orderBy('start_time', 'asc')
                             ->paginate(15);
         
-        $doctors = User::has('doctorAppointments')->get();
-        $patients = User::doesntHave('doctorAppointments')->get();
+        $doctors = User::role('Doctor')->where('company_id', session('company_id'))->get();
+        $patients = User::role('Patient')->where('company_id', session('company_id'))->get();
         $wards = Ward::all();
         
         return view('doctor-assignments.index', compact('assignments', 'doctors', 'patients', 'wards'));
@@ -60,8 +60,8 @@ class DoctorAssignmentController extends Controller
      */
     public function create()
     {
-        $doctors = User::whereHas('doctorDetails')->get();
-        $patients = User::whereDoesntHave('doctorDetails')->get();
+        $doctors = User::role('Doctor')->where('company_id', session('company_id'))->get();
+        $patients = User::role('Patient')->where('company_id', session('company_id'))->get();
         $wards = Ward::all();
         
         return view('doctor-assignments.create', compact('doctors', 'patients', 'wards'));
@@ -153,8 +153,8 @@ class DoctorAssignmentController extends Controller
      */
     public function edit(DoctorAssignment $doctorAssignment)
     {
-        $doctors = User::whereHas('doctorDetails')->get();
-        $patients = User::whereDoesntHave('doctorDetails')->get();
+        $doctors = User::role('Doctor')->where('company_id', session('company_id'))->get();
+        $patients = User::role('Patient')->where('company_id', session('company_id'))->get();
         $wards = Ward::all();
         
         return view('doctor-assignments.edit', compact('doctorAssignment', 'doctors', 'patients', 'wards'));

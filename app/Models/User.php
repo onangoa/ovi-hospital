@@ -108,10 +108,10 @@ class User extends Authenticatable
             $years = $birthDate->diffInYears($now);
             
             if ($years > 0) {
-                return $years . ' Y';
+                return round($years) . ' Y';
             } else {
                 $months = $birthDate->diffInMonths($now);
-                return '0Y ' . $months . ' months';
+                return '0 Y ' . $months . ' months';
             }
         }
         return null;

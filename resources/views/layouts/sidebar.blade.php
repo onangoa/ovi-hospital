@@ -354,12 +354,12 @@ $roleName = Auth::user()->getRoleNames();
                                 </li>
                             @endcanany
                             @canany(['company-read', 'company-create', 'company-update', 'company-delete'])
-                                <li class="nav-item">
+                                <!-- <li class="nav-item">
                                     <a href="{{ route('hikvision.index') }}" class="nav-link @if($c == 'hikvision') active @endif ">
                                         <i class="fas fa-fingerprint nav-icon"></i>
                                         <p>@lang('Hikvision Settings')</p>
                                     </a>
-                                </li>
+                                </li> -->
                             @endcanany
                         </ul>
                     </li>

@@ -208,7 +208,8 @@ class LabRequestController extends Controller
 
         $age = null;
         if (isset($patient->dob)) {
-            $age = \Carbon\Carbon::parse($patient->dob)->age;
+            $years = \Carbon\Carbon::parse($patient->dob)->diffInYears(\Carbon\Carbon::now());
+            $age = round($years) . ' Y';
         }
 
         $sex = $patient->gender ?? null;

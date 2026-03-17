@@ -5,12 +5,12 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     @can('doctor-detail-create')
-                        <h3>
+                        <!-- <h3>
                             <a href="{{ route('doctor-details.create') }}" class="btn btn-outline btn-info">
                                 + @lang('Add Doctor')
                             </a>
                             <span class="pull-right"></span>
-                        </h3>
+                        </h3> -->
                     @endcan
                 </div>
                 <div class="col-sm-6">

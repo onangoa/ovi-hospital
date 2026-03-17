@@ -292,7 +292,8 @@ class PatientDetailController extends Controller
         // Calculate age from date_of_birth if available
         $age = null;
         if ($patient->date_of_birth) {
-            $age = Carbon::parse($patient->date_of_birth)->age;
+            $years = Carbon::parse($patient->date_of_birth)->diffInYears(Carbon::now());
+            $age = round($years) . ' Y';
         }
         
         // Return the data in the format expected by the JavaScript

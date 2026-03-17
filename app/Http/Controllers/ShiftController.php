@@ -222,13 +222,19 @@ class ShiftController extends Controller
                 ];
                 $absentCount++;
             } else {
-                // Get first record as check-in and last record as check-out
+                // Get first record as check-in
                 $checkIn = $employeeAttendances->first();
-                $checkOut = $employeeAttendances->last();
+                $checkOut = null;
+                $checkOutTime = null;
+                
+                // Only set check-out if there are multiple attendance records
+                if ($employeeAttendances->count() > 1) {
+                    $checkOut = $employeeAttendances->last();
+                    $checkOutTime = \Carbon\Carbon::parse($checkOut->date_time);
+                }
                 
                 // Parse attendance times with full datetime
                 $checkInTime = \Carbon\Carbon::parse($checkIn->date_time);
-                $checkOutTime = \Carbon\Carbon::parse($checkOut->date_time);
                 
                 // Create shift times on the attendance date
                 $shiftStartTime = \Carbon\Carbon::parse($date . ' ' . $shift->start_time->format('H:i:s'));
@@ -253,8 +259,8 @@ class ShiftController extends Controller
                     $presentCount++;
                 }
                 
-                // Check for overtime (worked beyond shift end time)
-                if ($checkOutTime->gt($shiftEndTime)) {
+                // Check for overtime (only if check-out time exists)
+                if ($checkOutTime && $checkOutTime->gt($shiftEndTime)) {
                     $overtimeMinutes = $shiftEndTime->diffInMinutes($checkOutTime);
                     $overtime = $this->formatDuration($overtimeMinutes);
                     if ($status === 'on_time') {

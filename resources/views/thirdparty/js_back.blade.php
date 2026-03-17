@@ -75,7 +75,11 @@
     const formData = new FormData(form);
 
     try {
-
+if (url.startsWith("http://")) {
+    console.log(url, '1');
+        url = url.replace("http://", "https://");
+         console.log(url, '2');
+    }
         const response = await fetch(url, {
             method: "POST",
             body: formData,
@@ -84,7 +88,7 @@
                 "X-Requested-With": "XMLHttpRequest"
             }
         });
-
+ console.log(url, '3');
         if (response.ok) {
             location.reload(); // refresh page after delete
         } else {

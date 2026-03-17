@@ -16,7 +16,7 @@
                 <td>{{ $doctorDetail->user->name }}</td>
                 <td>{{ $doctorDetail->user->email }}</td>
                 <td>{{ $doctorDetail->user->phone ?? '-' }}</td>
-                <td>{{ $doctorDetail->hospitalDepartment->name ?? '-' }}</td>
+                <td>{{ $doctorDetail->hospitalDepartment?->name ?? 'N/A' }}</td>
                 <td>{{ $doctorDetail->specialist }}</td>
                 <td>{{ $doctorDetail->designation }}</td>
                 <td>{{ \Illuminate\Support\Str::limit($doctorDetail->biography, 200) }}</td>

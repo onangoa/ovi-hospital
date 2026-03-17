@@ -6,6 +6,8 @@ use App\Exports\UserExport;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\User;
+use App\Models\DoctorDetail;
+use App\Models\HospitalDepartment;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -90,13 +92,14 @@ class UserController extends Controller
      */
     public function create()
     {
-        $staffRoles = Role::where('role_for', '1')->where('name', '<>', 'Doctor')->pluck('name','name')->all();
+        $staffRoles = Role::where('role_for', '1')->pluck('name','name')->all();
         $userRoles = Role::where('role_for', '0')->pluck('name','name')->all();
         $companies = auth()->user()->companies()->get();
+        $hospitalDepartments = HospitalDepartment::where('status', '1')->get();
         foreach ($companies as $company) {
             $company->setSettings();
         }
-        return view('users.create',compact('staffRoles','userRoles','companies'));
+        return view('users.create',compact('staffRoles','userRoles','companies','hospitalDepartments'));
     }
 
     /**
@@ -151,6 +154,28 @@ class UserController extends Controller
         $input['photo'] = $logoUrl;
         $user = User::create($input);
         $user->assignRole($roles);
+        
+        // Handle Doctor role - create DoctorDetail record
+        if (in_array('Doctor', (array)$roles) && !$user->doctorDetails) {
+            $doctorData = [
+                'user_id' => $user->id,
+                'hospital_department_id' => $request->hospital_department_id ?? null,
+                'specialist' => $request->specialist ?? null,
+                'designation' => $request->designation ?? null,
+                'biography' => $request->biography ?? null,
+            ];
+            DoctorDetail::create($doctorData);
+            
+            // Set company_id for Doctor role users
+            if (isset($companies) && !empty($companies)) {
+                if (is_array($companies)) {
+                    $user->update(['company_id' => $companies[0]]);
+                } else {
+                    $user->update(['company_id' => $companies]);
+                }
+            }
+        }
+        
         if($request->role_for == "1") //staff
         {
             // Attach company
@@ -201,12 +226,13 @@ class UserController extends Controller
         $staffRoles = Role::where('role_for', '1')->pluck('name','name')->all();
         $userRoles = Role::where('role_for', '0')->pluck('name','name')->all();
         $companies = auth()->user()->companies()->get();
+        $hospitalDepartments = HospitalDepartment::where('status', '1')->get();
 
         foreach ($companies as $company) {
             $company->setSettings();
         }
 
-        return view('users.edit',compact('user','roleFor','staffRoles', 'userRoles','companies','cIdStd'));
+        return view('users.edit',compact('user','roleFor','staffRoles', 'userRoles','companies','cIdStd','hospitalDepartments'));
     }
 
 
@@ -246,7 +272,8 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email,'.$user->id,
-            'password' => 'same:password_confirmation',
+            'password' => 'nullable|min:8|same:password_confirmation',
+            'password_confirmation' => 'nullable|required_with:password',
             'status' => 'required',
             'role_for' => 'required',
             'photo' => ['nullable', 'image', 'mimes:png,jpg,jpeg']
@@ -277,7 +304,7 @@ class UserController extends Controller
         $input['name'] = $request->name;
         $input['email'] = $request->email;
         if (!empty($request->password)) {
-            $input['password'] = bcrypt($input['password']);
+            $input['password'] = bcrypt($request->password);
         } else {
             $input['password'] = $password;
         }
@@ -314,6 +341,63 @@ class UserController extends Controller
             }
 
         }
+        
+        // Handle Doctor role - create or update DoctorDetail record
+        $isDoctorRole = in_array('Doctor', (array)$roles);
+        $hasDoctorDetail = $user->doctorDetails;
+        
+        if ($isDoctorRole && !$hasDoctorDetail) {
+            // Create DoctorDetail record
+            $doctorData = [
+                'user_id' => $user->id,
+                'hospital_department_id' => $request->hospital_department_id ?? null,
+                'specialist' => $request->specialist ?? null,
+                'designation' => $request->designation ?? null,
+                'biography' => $request->biography ?? null,
+            ];
+            DoctorDetail::create($doctorData);
+            
+            // Set company_id for Doctor role users
+            if (isset($companies) && !empty($companies)) {
+                if (is_array($companies)) {
+                    $user->update(['company_id' => $companies[0]]);
+                } else {
+                    $user->update(['company_id' => $companies]);
+                }
+            }
+        } elseif ($isDoctorRole && $hasDoctorDetail) {
+            // Update existing DoctorDetail record
+            $doctorData = [];
+            if ($request->has('hospital_department_id')) {
+                $doctorData['hospital_department_id'] = $request->hospital_department_id;
+            }
+            if ($request->has('specialist')) {
+                $doctorData['specialist'] = $request->specialist;
+            }
+            if ($request->has('designation')) {
+                $doctorData['designation'] = $request->designation;
+            }
+            if ($request->has('biography')) {
+                $doctorData['biography'] = $request->biography;
+            }
+            if (!empty($doctorData)) {
+                $user->doctorDetails->update($doctorData);
+            }
+            
+            // Ensure company_id is set for Doctor role users
+            if (isset($companies) && !empty($companies)) {
+                if (is_array($companies)) {
+                    $user->update(['company_id' => $companies[0]]);
+                } else {
+                    $user->update(['company_id' => $companies]);
+                }
+            }
+        } elseif (!$isDoctorRole && $hasDoctorDetail) {
+            // Remove Doctor role - optionally delete DoctorDetail record
+            // Uncomment the next line if you want to delete DoctorDetail when Doctor role is removed
+            // $user->doctorDetails->delete();
+        }
+        
         $user->assignRole($roles);
         return redirect()->route('users.index')->with('success', trans('users.user updated successfully'));
     }

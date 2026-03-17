@@ -92,7 +92,7 @@
                                     <td>{{ $doctorDetail->user->name }}</td>
                                     <td>{{ $doctorDetail->user->email }}</td>
                                     <td>{{ $doctorDetail->user->phone }}</td>
-                                    <td>{{ $doctorDetail->hospitalDepartment->name }}</td>
+                                    <td>{{ $doctorDetail->hospitalDepartment?->name ?? 'N/A' }}</td>
                                     <td>
                                         @if($doctorDetail->user->status == 1)
                                             <span class="badge badge-pill badge-success">@lang('Active')</span>

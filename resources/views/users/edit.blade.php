@@ -93,7 +93,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="fas fa-fingerprint"></i></span>
                                     </div>
-                                    <input class="form-control ambitious-form-loading @error('password_confirmation') is-invalid @enderror" name="confirm_password" id="confirm_password" type="password" placeholder="{{ __('Type Your Confirm Password Here') }}">
+                                    <input class="form-control ambitious-form-loading @error('password_confirmation') is-invalid @enderror" name="password_confirmation" id="password_confirmation" type="password" placeholder="{{ __('Type Your Confirm Password Here') }}">
                                     @error('password_confirmation')
                                         <div class="invalid-feedback">
                                             {{ $message }}
@@ -170,6 +170,58 @@
                                                 <option value="{{ $value->id }}" {{ old('staff_company', $value->id) == $cIdStd ? 'selected' : ''  }} >{{ $value->company_name }}</option>
                                             @endforeach
                                         </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="doctor_block" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-md-12 col-form-label"><h4>{{ __('Hospital Department') }}</h4></label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-hospital"></i></span>
+                                        </div>
+                                        <select class="form-control ambitious-form-loading" name="hospital_department_id" id="hospital_department_id">
+                                            <option value="">{{ __('Select Department') }}</option>
+                                            @foreach($hospitalDepartments as $department)
+                                                <option value="{{ $department->id }}" @if($user->doctorDetails && $user->doctorDetails->hospital_department_id == $department->id) selected @endif>{{ $department->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-md-12 col-form-label"><h4>{{ __('Specialist') }}</h4></label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-user-md"></i></span>
+                                        </div>
+                                        <input class="form-control ambitious-form-loading" name="specialist" id="specialist" type="text" placeholder="{{ __('Type Specialist Here') }}" value="{{ $user->doctorDetails ? $user->doctorDetails->specialist : '' }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-md-12 col-form-label"><h4>{{ __('Designation') }}</h4></label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-id-badge"></i></span>
+                                        </div>
+                                        <input class="form-control ambitious-form-loading" name="designation" id="designation" type="text" placeholder="{{ __('Type Designation Here') }}" value="{{ $user->doctorDetails ? $user->doctorDetails->designation : '' }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="col-md-12 col-form-label"><h4>{{ __('Biography') }}</h4></label>
+                                    <div class="input-group mb-3">
+                                        <textarea class="form-control ambitious-form-loading" name="biography" id="biography" rows="3" placeholder="{{ __('Type Biography Here') }}">{{ $user->doctorDetails ? $user->doctorDetails->biography : '' }}</textarea>
                                     </div>
                                 </div>
                             </div>

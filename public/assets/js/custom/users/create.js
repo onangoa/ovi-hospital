@@ -19,6 +19,24 @@ $(document).ready( function () {
         }
     });
 
+    // Show/hide doctor block based on staff role selection
+    function toggleDoctorBlock() {
+        var staffRole = $('#staff_roles').val();
+        if (staffRole === 'Doctor') {
+            $('#doctor_block').show();
+        } else {
+            $('#doctor_block').hide();
+        }
+    }
+
+    // Initialize on page load
+    toggleDoctorBlock();
+
+    // Toggle when staff role changes
+    $('#staff_roles').change(function(){
+        toggleDoctorBlock();
+    });
+
     var quill = new Quill('#input_address', {
         theme: 'snow'
     });

@@ -118,7 +118,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="hospital_department_id">@lang('Department')</label>
-                                    <p>{{ $doctorDetail->hospitalDepartment->name }}</p>
+                                    <p>{{ $doctorDetail->hospitalDepartment?->name ?? 'N/A' }}</p>
                                 </div>
                             </div>
                             <div class="col-md-4">

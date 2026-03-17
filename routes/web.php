@@ -111,6 +111,7 @@ Route::group(['middleware' => ['auth', 'check.attendance']], function() {
         'nursing-cardexes' => App\Http\Controllers\NursingCardexController::class,
         'vital-signs' => App\Http\Controllers\VitalSignController::class,
         'attendance' => App\Http\Controllers\AttendanceController::class,
+        'shifts' => App\Http\Controllers\ShiftController::class,
     ]);
 
     Route::get('/components/vital-signs', [App\Http\Controllers\ComponentController::class, 'vitalSigns'])->name('components.vitalSigns');

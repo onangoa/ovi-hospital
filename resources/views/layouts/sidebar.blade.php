@@ -69,6 +69,14 @@ $roleName = Auth::user()->getRoleNames();
                         </a>
                     </li>
                 @endcanany
+                @canany(['shift-read', 'shift-create', 'shift-update', 'shift-delete'])
+                    <li class="nav-item">
+                        <a href="{{ route('shifts.index') }}" class="nav-link @if($c == 'shifts') active @endif">
+                            <i class="nav-icon fa fa-calendar-alt"></i>
+                            <p>Shifts</p>
+                        </a>
+                    </li>
+                @endcanany
                 @canany(['ward-read'])
                 <li class="nav-item">
                     <a href="{{ route('wards.index') }}" class="nav-link @if($c == 'wards') active @endif">

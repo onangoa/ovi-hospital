@@ -63,41 +63,52 @@
             "responsive": true,
         });
 
+        // $('#myModal').on('show.bs.modal', function(e) {
+        //     console.log($(e.relatedTarget).data('href'));
+        //     $(this).find('.btn-ok').attr('action', $(e.relatedTarget).data('href'));
+        // });
         $('#myModal').on('show.bs.modal', function(e) {
-            console.log($(e.relatedTarget).data('href'));
-            $(this).find('.btn-ok').attr('action', 'https://ovihospital.co.ke/doctor-details/1');
+
+            let url = new URL($(e.relatedTarget).data('href'), window.location.origin);
+
+            url.protocol = 'https:';
+
+            console.log(url.toString());
+
+            $(this).find('.btn-ok').attr('action', url.toString());
+
         });
         document.querySelector('.btn-ok').addEventListener('submit', async function (e) {
-    e.preventDefault();
+            e.preventDefault();
 
-    const form = e.target;
-    const url = form.getAttribute('action');
+            const form = e.target;
+            const url = form.getAttribute('action');
 
-    const formData = new FormData(form);
+            const formData = new FormData(form);
 
-    try {
-if (url.startsWith("http://")) {
-    console.log(url, '1');
-        url = url.replace("http://", "https://");
-         console.log(url, '2');
-    }
-        const response = await fetch(url, {
-            method: "POST",
-            body: formData,
-            credentials: "same-origin"
+            try {
+        if (url.startsWith("http://")) {
+            console.log(url, '1');
+                url = url.replace("http://", "https://");
+                console.log(url, '2');
+            }
+                const response = await fetch(url, {
+                    method: "POST",
+                    body: formData,
+                    credentials: "same-origin"
+                });
+        console.log(url, '3');
+                if (response.ok) {
+                    location.reload(); // refresh page after delete
+                } else {
+                    alert("Delete failed");
+                }
+
+            } catch (err) {
+                console.error("Delete error:", err);
+                alert("Network error");
+            }
         });
- console.log(url, '3');
-        if (response.ok) {
-            location.reload(); // refresh page after delete
-        } else {
-            alert("Delete failed");
-        }
-
-    } catch (err) {
-        console.error("Delete error:", err);
-        alert("Network error");
-    }
-});
     });
 
     $(document).on('click', '#doPrint', function(){

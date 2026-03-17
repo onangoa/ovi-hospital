@@ -97,7 +97,7 @@
                     response.status === 302 ||
                     response.status === 303 ||
                     response.type === "opaqueredirect") {
-                    location.reload(); // refresh page after delete
+                    //location.reload(); // refresh page after delete
                 } else {
                     alert("Delete failed");
                 }

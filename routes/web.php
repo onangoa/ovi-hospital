@@ -67,7 +67,7 @@ Route::post('/install',[
 ]);
 
 
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth', 'check.attendance']], function() {
     Route::get('/company/companyAccountSwitch', [
         'uses' => 'App\Http\Controllers\CompanyController@companyAccountSwitch',
         'as' => 'company.companyAccountSwitch'
@@ -237,7 +237,20 @@ Route::group(['middleware' => ['auth']], function() {
 
 });
 
+// Application settings routes (without attendance check for initial setup)
 Route::group(['middleware' => ['auth']], function() {
+    Route::get('/apsetting',[
+        'uses' => 'App\Http\Controllers\ApplicationSettingController@index',
+        'as' => 'apsetting'
+    ]);
+
+    Route::post('/apsetting/update',[
+        'uses' => 'App\Http\Controllers\ApplicationSettingController@update',
+        'as' => 'apsetting.update'
+    ]);
+});
+
+Route::group(['middleware' => ['auth', 'check.attendance']], function() {
 
     Route::get('/dashboard',[
     'uses' => 'App\Http\Controllers\DashboardController@index',
@@ -266,37 +279,37 @@ Route::group(['middleware' => ['auth']], function() {
 });
 
 // general Setting
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth', 'check.attendance']], function() {
 
     Route::get('/general',[
-    'uses' => 'App\Http\Controllers\GeneralController@index',
-    'as' => 'general'
+        'uses' => 'App\Http\Controllers\GeneralController@index',
+        'as' => 'general'
     ]);
 
     Route::post('/general',[
-    'uses' => 'App\Http\Controllers\GeneralController@edit',
-    'as' => 'general'
+        'uses' => 'App\Http\Controllers\GeneralController@edit',
+        'as' => 'general'
     ]);
 
     Route::post('/general/localisation',[
-    'uses' => 'App\Http\Controllers\GeneralController@localisation',
-    'as' => 'general.localisation'
+        'uses' => 'App\Http\Controllers\GeneralController@localisation',
+        'as' => 'general.localisation'
     ]);
 
     Route::post('/general/invoice',[
-    'uses' => 'App\Http\Controllers\GeneralController@invoice',
-    'as' => 'general.invoice'
+        'uses' => 'App\Http\Controllers\GeneralController@invoice',
+        'as' => 'general.invoice'
     ]);
 
     Route::post('/general/defaults',[
-    'uses' => 'App\Http\Controllers\GeneralController@defaults',
-    'as' => 'general.defaults'
+        'uses' => 'App\Http\Controllers\GeneralController@defaults',
+        'as' => 'general.defaults'
     ]);
 
 });
 
 // Hikvision Settings
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth', 'check.attendance']], function() {
 
     Route::get('/hikvision',[
         'uses' => 'App\Http\Controllers\HikvisionController@index',

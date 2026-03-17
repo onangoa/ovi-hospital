@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+            'check.attendance' => \App\Http\Middleware\CheckAttendance::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

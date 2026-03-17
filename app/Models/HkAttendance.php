@@ -117,4 +117,36 @@ class HkAttendance extends Model
     {
         return $this->belongsTo(User::class, 'employee_no_string', 'external_id');
     }
+
+    /**
+     * Check if a user has attendance for a particular day
+     *
+     * @param int|string $userId User ID or external_id
+     * @param string|null $date Date in Y-m-d format (defaults to today)
+     * @return bool
+     */
+    public static function hasAttendanceForDay($userId, $date = null)
+    {
+        if ($date === null) {
+            $date = now()->format('Y-m-d');
+        }
+
+        return self::where('employee_no_string', $userId)
+            ->whereDate('date_time', $date)
+            ->exists();
+    }
+
+    /**
+     * Check if the authenticated user has attendance for today
+     *
+     * @return bool
+     */
+    public static function currentUserHasAttendance()
+    {
+        if (!auth()->check()) {
+            return false;
+        }
+
+        return self::hasAttendanceForDay(auth()->user()->external_id);
+    }
 }

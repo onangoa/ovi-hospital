@@ -115,6 +115,6 @@ class HkAttendance extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'employee_no_string', 'id');
+        return $this->belongsTo(User::class, 'employee_no_string', 'external_id');
     }
 }

@@ -65,7 +65,7 @@
 
         $('#myModal').on('show.bs.modal', function(e) {
             console.log($(e.relatedTarget).data('href'));
-            $(this).find('.btn-ok').attr('action', $(e.relatedTarget).data('href'));
+            $(this).find('.btn-ok').attr('action', 'https://ovihospital.co.ke/doctor-details/1');
         });
         document.querySelector('.btn-ok').addEventListener('submit', async function (e) {
     e.preventDefault();

@@ -99,12 +99,14 @@
                     response.type === "opaqueredirect") {
                     //location.reload(); // refresh page after delete
                 } else {
-                    alert("Delete failed");
+                    //alert("Delete failed");
+                    location.reload()
                 }
 
             } catch (err) {
                 console.error("Delete error:", err);
-                alert("Network error");
+                location.reload()
+                //alert("Network error");
             }
         });
     });

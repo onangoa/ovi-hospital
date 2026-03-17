@@ -97,4 +97,48 @@ class Shift extends Model
     {
         return $this->belongsToMany(User::class, 'user_shift');
     }
+
+    /**
+     * Check if the shift can be deleted
+     *
+     * @return bool
+     */
+    public function canBeDeleted()
+    {
+        // Check if shift has users assigned
+        if ($this->users()->count() > 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Get the reason why the shift cannot be deleted
+     *
+     * @return string|null
+     */
+    public function getCannotDeleteReason()
+    {
+        // Check if shift has users assigned
+        if ($this->users()->count() > 0) {
+            $userCount = $this->users()->count();
+            
+            // Check if any users have attendance records
+            $usersWithAttendance = 0;
+            foreach ($this->users as $user) {
+                if ($user->external_id && \App\Models\HkAttendance::where('employee_no_string', $user->external_id)->exists()) {
+                    $usersWithAttendance++;
+                }
+            }
+            
+            if ($usersWithAttendance > 0) {
+                return "This shift has {$userCount} user(s) assigned with attendance records. Please reassign users before deleting.";
+            } else {
+                return "This shift has {$userCount} user(s) assigned. Please reassign users before deleting.";
+            }
+        }
+
+        return null;
+    }
 }

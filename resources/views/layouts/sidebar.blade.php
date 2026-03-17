@@ -61,14 +61,7 @@ $roleName = Auth::user()->getRoleNames();
                         </a>
                     </li>
                 @endcanany
-                @canany(['attendance-read'])
-                    <li class="nav-item">
-                        <a href="{{ route('attendance.index') }}" class="nav-link @if($c == 'attendance') active @endif">
-                            <i class="nav-icon fas fa-clock"></i>
-                            <p>Attendance</p>
-                        </a>
-                    </li>
-                @endcanany
+               
                 @canany(['shift-read', 'shift-create', 'shift-update', 'shift-delete'])
                     <li class="nav-item">
                         <a href="{{ route('shifts.index') }}" class="nav-link @if($c == 'shifts') active @endif">
@@ -342,6 +335,14 @@ $roleName = Auth::user()->getRoleNames();
                                     <a href="{{ route('users.index') }}" class="nav-link @if($c == 'users') active @endif ">
                                         <i class="fa fa-users nav-icon"></i>
                                         <p>@lang('User Management')</p>
+                                    </a>
+                                </li>
+                            @endcanany
+                             @canany(['attendance-read'])
+                                <li class="nav-item">
+                                    <a href="{{ route('attendance.index') }}" class="nav-link @if($c == 'attendance') active @endif">
+                                        <i class="nav-icon fas fa-clock"></i>
+                                        <p>Attendance</p>
                                     </a>
                                 </li>
                             @endcanany

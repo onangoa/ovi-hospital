@@ -118,35 +118,16 @@
                     <tbody>
                         @forelse($users as $user)
                             @php
-                                $attendance = $attendances->where('user_id', $user->id)->first();
-                                $status = 'absent';
-                                $lateBy = '-';
-                                $overtime = '-';
-                                $checkInTime = '-';
-                                $checkOutTime = '-';
-
-                                if ($attendance) {
-                                    $checkInTime = $attendance->date_time->format('H:i');
-                                    $checkOutTime = $attendance->date_time->addHours(8)->format('H:i'); // Assuming 8-hour shift
-
-                                    $shiftStartTime = \Carbon\Carbon::parse($shift->start_time);
-                                    $shiftEndTime = \Carbon\Carbon::parse($shift->end_time);
-                                    $checkIn = \Carbon\Carbon::parse($attendance->date_time);
-
-                                    // Check if late
-                                    if ($checkIn->gt($shiftStartTime->addMinutes(15))) {
-                                        $status = 'late';
-                                        $lateBy = $shiftStartTime->addMinutes(15)->diffInMinutes($checkIn) . ' min';
-                                    } else {
-                                        $status = 'on_time';
-                                    }
-
-                                    // Check for overtime
-                                    if ($checkIn->gt($shiftEndTime)) {
-                                        $status = 'overtime';
-                                        $overtime = $shiftEndTime->diffInMinutes($checkIn) . ' min';
-                                    }
-                                }
+                                $attendanceData = $userAttendanceData[$user->id] ?? null;
+                                $checkInTime = $attendanceData && $attendanceData['check_in']
+                                    ? \Carbon\Carbon::parse($attendanceData['check_in']->date_time)->format('H:i')
+                                    : '-';
+                                $checkOutTime = $attendanceData && $attendanceData['check_out']
+                                    ? \Carbon\Carbon::parse($attendanceData['check_out']->date_time)->format('H:i')
+                                    : '-';
+                                $status = $attendanceData ? $attendanceData['status'] : 'absent';
+                                $lateBy = $attendanceData ? ($attendanceData['late_by'] ?? '-') : '-';
+                                $overtime = $attendanceData ? ($attendanceData['overtime'] ?? '-') : '-';
                             @endphp
                             <tr>
                                 <td>

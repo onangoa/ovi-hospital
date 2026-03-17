@@ -101,12 +101,14 @@
                     </div>
 
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Save Shift
-                        </button>
-                        <a href="{{ route('shifts.index') }}" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> Cancel
-                        </a>
+                        <div class="btn-group" role="group">
+                            <button type="submit" class="btn btn-primary" title="Save Shift">
+                                <i class="fas fa-save"></i> Save Shift
+                            </button>
+                            <a href="{{ route('shifts.index') }}" class="btn btn-secondary" title="Cancel">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
                     </div>
                 </form>
             </div>

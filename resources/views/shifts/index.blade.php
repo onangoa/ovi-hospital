@@ -92,19 +92,29 @@
                                 </td>
                                 <td>{{ $shift->description ? Str::limit($shift->description, 50) : '-' }}</td>
                                 <td>
-                                    <a href="{{ route('shifts.edit', $shift->id) }}" class="btn btn-info btn-sm">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>
-                                    <a href="{{ route('shifts.attendance', $shift->id) }}" class="btn btn-success btn-sm">
-                                        <i class="fas fa-chart-bar"></i> Attendance
-                                    </a>
-                                    <form action="{{ route('shifts.destroy', $shift->id) }}" method="POST" style="display: inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this shift?')">
-                                            <i class="fas fa-trash"></i> Delete
-                                        </button>
-                                    </form>
+                                    <div class="btn-group" role="group">
+                                        <a href="{{ route('shifts.attendance', $shift->id) }}" class="btn btn-success btn-sm" title="View Attendance">
+                                            <i class="fas fa-chart-bar"></i>
+                                        </a>
+                                        
+                                        <a href="{{ route('shifts.edit', $shift->id) }}" class="btn btn-info btn-sm" title="Edit Shift">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        
+                                        @if($shift->canBeDeleted())
+                                            <form action="{{ route('shifts.destroy', $shift->id) }}" method="POST" style="display: inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm" title="Delete Shift" onclick="return confirm('Are you sure you want to delete this shift?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        @else
+                                            <button type="button" class="btn btn-danger btn-sm" disabled title="{{ $shift->getCannotDeleteReason() }}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        @endif
+                                    </div>
                                 </td>
                             </tr>
                         @empty

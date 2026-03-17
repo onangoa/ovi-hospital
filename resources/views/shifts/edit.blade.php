@@ -103,12 +103,14 @@
                     </div>
 
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Update Shift
-                        </button>
-                        <a href="{{ route('shifts.index') }}" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> Cancel
-                        </a>
+                        <div class="btn-group" role="group">
+                            <button type="submit" class="btn btn-primary" title="Update Shift">
+                                <i class="fas fa-save"></i> Update Shift
+                            </button>
+                            <a href="{{ route('shifts.index') }}" class="btn btn-secondary" title="Cancel">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -139,8 +141,8 @@
                                     <td>{{ $user->email }}</td>
                                     <td>{{ $user->external_id ?? '-' }}</td>
                                     <td>
-                                        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-info btn-sm">
-                                            <i class="fas fa-edit"></i> Edit User
+                                        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-info btn-sm" title="Edit User">
+                                            <i class="fas fa-edit"></i>
                                         </a>
                                     </td>
                                 </tr>

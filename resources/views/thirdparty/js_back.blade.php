@@ -64,6 +64,7 @@
         });
 
         $('#myModal').on('show.bs.modal', function(e) {
+            console.log($(e.relatedTarget).data('href'));
             $(this).find('.btn-ok').attr('action', $(e.relatedTarget).data('href'));
         });
         document.querySelector('.btn-ok').addEventListener('submit', async function (e) {
@@ -83,10 +84,7 @@ if (url.startsWith("http://")) {
         const response = await fetch(url, {
             method: "POST",
             body: formData,
-            credentials: "same-origin",
-            headers: {
-                "X-Requested-With": "XMLHttpRequest"
-            }
+            credentials: "same-origin"
         });
  console.log(url, '3');
         if (response.ok) {

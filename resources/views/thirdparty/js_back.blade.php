@@ -66,6 +66,36 @@
         $('#myModal').on('show.bs.modal', function(e) {
             $(this).find('.btn-ok').attr('action', $(e.relatedTarget).data('href'));
         });
+        document.querySelector('.btn-ok').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const url = form.getAttribute('action');
+
+    const formData = new FormData(form);
+
+    try {
+
+        const response = await fetch(url, {
+            method: "POST",
+            body: formData,
+            credentials: "same-origin",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        });
+
+        if (response.ok) {
+            location.reload(); // refresh page after delete
+        } else {
+            alert("Delete failed");
+        }
+
+    } catch (err) {
+        console.error("Delete error:", err);
+        alert("Network error");
+    }
+});
     });
 
     $(document).on('click', '#doPrint', function(){

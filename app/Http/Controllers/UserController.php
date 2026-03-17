@@ -8,6 +8,7 @@ use App\Models\Company;
 use App\Models\User;
 use App\Models\DoctorDetail;
 use App\Models\HospitalDepartment;
+use App\Models\Shift;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -96,10 +97,11 @@ class UserController extends Controller
         $userRoles = Role::where('role_for', '0')->pluck('name','name')->all();
         $companies = auth()->user()->companies()->get();
         $hospitalDepartments = HospitalDepartment::where('status', '1')->get();
+        $shifts = Shift::active()->get();
         foreach ($companies as $company) {
             $company->setSettings();
         }
-        return view('users.create',compact('staffRoles','userRoles','companies','hospitalDepartments'));
+        return view('users.create',compact('staffRoles','userRoles','companies','hospitalDepartments','shifts'));
     }
 
     /**
@@ -155,6 +157,11 @@ class UserController extends Controller
         $input['photo'] = $logoUrl;
         $user = User::create($input);
         $user->assignRole($roles);
+        
+        // Assign shifts to user
+        if ($request->has('shifts') && is_array($request->shifts)) {
+            $user->shifts()->sync($request->shifts);
+        }
         
         // Handle Doctor role - create DoctorDetail record
         if (in_array('Doctor', (array)$roles) && !$user->doctorDetails) {
@@ -228,12 +235,13 @@ class UserController extends Controller
         $userRoles = Role::where('role_for', '0')->pluck('name','name')->all();
         $companies = auth()->user()->companies()->get();
         $hospitalDepartments = HospitalDepartment::where('status', '1')->get();
+        $shifts = Shift::active()->get();
 
         foreach ($companies as $company) {
             $company->setSettings();
         }
 
-        return view('users.edit',compact('user','roleFor','staffRoles', 'userRoles','companies','cIdStd','hospitalDepartments'));
+        return view('users.edit',compact('user','roleFor','staffRoles', 'userRoles','companies','cIdStd','hospitalDepartments','shifts'));
     }
 
 
@@ -317,6 +325,13 @@ class UserController extends Controller
         if($request->photo)
             $input['photo'] = $logoUrl;
         $user->update($input);
+        
+        // Update shifts assignment
+        if ($request->has('shifts') && is_array($request->shifts)) {
+            $user->shifts()->sync($request->shifts);
+        } else {
+            $user->shifts()->detach();
+        }
 
         DB::table('model_has_roles')->where('model_id',$user->id)->delete();
 

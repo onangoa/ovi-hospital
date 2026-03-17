@@ -46,6 +46,7 @@ class User extends Authenticatable
         'guardian_email',
         'guardian_address',
         'guardian_relation',
+        'shift_id',
     ];
 
     protected $appends = ['age'];
@@ -182,5 +183,20 @@ class User extends Authenticatable
     public function doctorDetails()
     {
         return $this->hasOne(DoctorDetail::class);
+    }
+
+    public function shift()
+    {
+        return $this->belongsTo(Shift::class);
+    }
+
+    public function shifts()
+    {
+        return $this->belongsToMany(Shift::class, 'user_shift');
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(HkAttendance::class, 'employee_no_string', 'external_id');
     }
 }

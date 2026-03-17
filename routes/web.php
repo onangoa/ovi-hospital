@@ -114,6 +114,9 @@ Route::group(['middleware' => ['auth', 'check.attendance']], function() {
         'shifts' => App\Http\Controllers\ShiftController::class,
     ]);
 
+    // Shift attendance analysis route
+    Route::get('/shifts/{shift}/attendance', [App\Http\Controllers\ShiftController::class, 'attendance'])->name('shifts.attendance');
+
     Route::get('/components/vital-signs', [App\Http\Controllers\ComponentController::class, 'vitalSigns'])->name('components.vitalSigns');
     
     // Vital Signs Management Routes

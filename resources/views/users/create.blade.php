@@ -145,6 +145,23 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-12 col-form-label"><h4>@lang('Shifts')</h4></label>
+                                <div class="col-md-12">
+                                    <select class="select2 custom-width-100 @error('shifts') is-invalid @enderror" id="shifts" name="shifts[]" multiple="multiple" data-placeholder="@lang('Select shifts')">
+                                        @foreach($shifts as $shift)
+                                            <option value="{{ $shift->id }}" @if(is_array(old('shifts')) && in_array($shift->id, old('shifts'))) selected @endif>{{ $shift->name }} ({{ $shift->time_range }})</option>
+                                        @endforeach
+                                    </select>
+                                    @error('shifts')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div id="staff_block">
                         <div class="row">

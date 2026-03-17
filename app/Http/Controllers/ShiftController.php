@@ -129,4 +129,56 @@ class ShiftController extends Controller
         return redirect()->route('shifts.index')
             ->with('success', 'Shift deleted successfully.');
     }
+
+    /**
+     * Show attendance analysis for a specific shift.
+     *
+     * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function attendance(Request $request, $id)
+    {
+        $shift = Shift::findOrFail($id);
+        
+        // Get users assigned to this shift
+        $query = User::where('shift_id', $id);
+        
+        // Filter by date if provided
+        $date = $request->has('date') && $request->date 
+            ? $request->date 
+            : now()->format('Y-m-d');
+        
+        $users = $query->paginate(20);
+        
+        // Get attendance records for the specified date
+        $attendances = \App\Models\HkAttendance::whereDate('date_time', $date)
+            ->whereIn('employee_no_string', $users->pluck('external_id')->filter())
+            ->get()
+            ->keyBy('employee_no_string');
+        
+        // Calculate statistics
+        $presentCount = 0;
+        $lateCount = 0;
+        $absentCount = 0;
+        
+        foreach ($users as $user) {
+            $attendance = $attendances->get($user->external_id);
+            
+            if (!$attendance) {
+                $absentCount++;
+            } else {
+                $presentCount++;
+                $shiftStartTime = \Carbon\Carbon::parse($shift->start_time);
+                $checkIn = \Carbon\Carbon::parse($attendance->date_time);
+                
+                // Check if late (more than 15 minutes after shift start)
+                if ($checkIn->gt($shiftStartTime->addMinutes(15))) {
+                    $lateCount++;
+                }
+            }
+        }
+        
+        return view('shifts.attendance', compact('shift', 'users', 'attendances', 'presentCount', 'lateCount', 'absentCount'));
+    }
 }

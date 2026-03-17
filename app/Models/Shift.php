@@ -87,4 +87,14 @@ class Shift extends Model
     {
         return $this->start_time->format('h:i A') . ' - ' . $this->end_time->format('h:i A');
     }
+
+    /**
+     * Relationship to User model
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_shift');
+    }
 }

@@ -71,6 +71,22 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
+                                <label class="col-md-12 col-form-label"><h4>{{ __('External ID') }}</h4></label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                    </div>
+                                    <input class="form-control ambitious-form-loading @error('external_id') is-invalid @enderror" name="external_id" id="external_id" value="{{ old('external_id', $user->external_id) }}" type="text" placeholder="{{ __('Type External ID Here') }}">
+                                    @error('external_id')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 <label class="col-md-12 col-form-label"><h4>{{ __('Password') }}</h4></label>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">

@@ -147,6 +147,7 @@ class UserController extends Controller
 
         $input['name'] = $request->name;
         $input['email'] = $request->email;
+        $input['external_id'] = $request->external_id;
         $input['password'] = bcrypt($request->password);
         $input['phone'] = $request->phone;
         $input['address'] = $request->address;
@@ -303,6 +304,7 @@ class UserController extends Controller
         $input = array();
         $input['name'] = $request->name;
         $input['email'] = $request->email;
+        $input['external_id'] = $request->external_id;
         if (!empty($request->password)) {
             $input['password'] = bcrypt($request->password);
         } else {

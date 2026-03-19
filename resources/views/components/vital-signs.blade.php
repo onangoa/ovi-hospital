@@ -60,8 +60,11 @@
                                class="form-control @error('vital_signs.' . $vitalSign->field_name) is-invalid @enderror"
                                id="{{ $vitalSign->field_name }}"
                                value="{{ $vital_signs[$vitalSign->field_name] ?? '' }}"
-                               @if($vitalSign->min_value !== null) min="{{ $vitalSign->min_value }}" @endif
-                               @if($vitalSign->max_value !== null) max="{{ $vitalSign->max_value }}" @endif
+                               @php 
+                                $true = false;
+                               @endphp
+                               @if($true && $vitalSign->min_value !== null) min="{{ $vitalSign->min_value }}" @endif
+                               @if($true && $vitalSign->max_value !== null) max="{{ $vitalSign->max_value }}" @endif
                                @if(isset($vitalSign->pivot) && $vitalSign->pivot->is_required) required @endif>
                     
                     @elseif($vitalSign->field_type == 'select')

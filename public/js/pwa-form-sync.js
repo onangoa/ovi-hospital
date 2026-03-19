@@ -388,7 +388,7 @@ window.addEventListener('offline', () => {
     // If not already on /offline route, navigate to it
     if (window.location.pathname !== '/offline') {
         console.log('[PWA] Navigating to /offline route');
-        window.location.href = '/offline';
+        //window.location.href = '/offline';
     }
     
     showOfflineNotification('You are now offline. Forms will be saved and synced when you are back online.', 'info');

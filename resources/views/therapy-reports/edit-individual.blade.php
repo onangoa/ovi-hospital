@@ -8,7 +8,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('therapy-reports.index') }}">Therapy Reports</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('therapy-reports.individual') }}">Individual Therapy Reports</a></li>
                         <li class="breadcrumb-item active">Edit Individual Therapy Session</li>
                     </ol>
                 </div>
@@ -144,7 +144,7 @@
                                     <label class="col-md-3 col-form-label"></label>
                                     <div class="col-md-8">
                                         <input type="submit" value="Submit" class="btn btn-outline btn-info btn-lg"/>
-                                        <a href="{{ route('therapy-reports.index') }}" class="btn btn-outline btn-warning btn-lg">Cancel</a>
+                                        <a href="{{ route('therapy-reports.individual') }}" class="btn btn-outline btn-warning btn-lg">Cancel</a>
                                     </div>
                                 </div>
                             </div>

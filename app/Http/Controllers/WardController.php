@@ -278,6 +278,30 @@ class WardController extends Controller
 
 
     /**
+     * Get active patients for a ward
+     *
+     * @param  \App\Models\Ward  $ward
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getActivePatients(Ward $ward)
+    {
+        // Get only active patients (not discharged) currently assigned to the ward
+        $activePatients = $ward->patients()
+            ->wherePivot('discharged_at', null)
+            ->get();
+        
+        // Format the response to avoid ambiguous column issues
+        $patients = $activePatients->map(function($patient) {
+            return [
+                'id' => $patient->id,
+                'name' => $patient->name,
+            ];
+        });
+        
+        return response()->json($patients);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

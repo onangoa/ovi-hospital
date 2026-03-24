@@ -148,6 +148,9 @@ Route::group(['middleware' => ['auth', 'check.attendance']], function() {
     // Routes for fetching patient/ward based on time slot
     Route::get('/individual-therapy/get-patient-by-slot', [App\Http\Controllers\TherapyReportController::class, 'getPatientByTimeSlot'])->name('individual-therapy.get-patient-by-slot');
     Route::get('/group-therapy/get-ward-by-slot', [App\Http\Controllers\TherapyReportController::class, 'getWardByTimeSlot'])->name('group-therapy.get-ward-by-slot');
+    
+    // Route for fetching patients in a ward
+    Route::get('/api/wards/{ward}/patients', [App\Http\Controllers\WardController::class, 'getActivePatients'])->name('wards.patients');
 
     // Specific routes for individual and group therapy show views
     Route::get('/individual-therapy/{therapyReport}', [App\Http\Controllers\TherapyReportController::class, 'showIndividual'])->name('individual-therapy.show');

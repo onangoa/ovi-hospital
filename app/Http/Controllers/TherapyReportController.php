@@ -41,7 +41,7 @@ class TherapyReportController extends Controller
         if ($request->export_pdf)
             return $this->doIndividualPdfExport($request);
 
-        $query = TherapyReport::whereNotNull('patient_id');
+        $query = TherapyReport::where('therapy_type', 'individual');
 
         if ($request->filled('patient_id')) {
             $query->where('patient_id', $request->patient_id);
@@ -73,7 +73,7 @@ class TherapyReportController extends Controller
         if ($request->export_pdf)
             return $this->doGroupPdfExport($request);
 
-        $query = TherapyReport::whereNull('patient_id');
+        $query = TherapyReport::where('therapy_type', 'group');
 
         if ($request->filled('participant_ids')) {
             $query->whereJsonContains('participant_ids', $request->participant_ids);
@@ -241,6 +241,7 @@ class TherapyReportController extends Controller
         $data = $request->all();
 
         $data['physiotherapist_id'] = auth()->id();
+        $data['therapy_type'] = 'individual';
 
         TherapyReport::create($data);
 
@@ -270,6 +271,7 @@ class TherapyReportController extends Controller
         $data = $request->all();
 
         $data['physiotherapist_id'] = auth()->id();
+        $data['therapy_type'] = 'individual';
 
         $therapyReport->update($data);
 
@@ -304,6 +306,7 @@ class TherapyReportController extends Controller
         }
 
         $data['physiotherapist_id'] = auth()->id();
+        $data['therapy_type'] = 'group';
 
         $therapyReport->update($data);
 
@@ -335,6 +338,10 @@ class TherapyReportController extends Controller
         $patients = \App\Models\User::role('Patient')->where('company_id', session('company_id'))->where('status', '1')->get();
         $selectedParticipants = $therapyReport->participant_ids ?? [];
         $currentUser = auth()->user();
+        
+        // Load ward relationship if exists
+        $therapyReport->load('ward');
+        
         return view('therapy-reports.edit-group', compact('therapyReport', 'patients', 'selectedParticipants', 'currentUser'));
     }
 
@@ -357,19 +364,30 @@ class TherapyReportController extends Controller
         ]);
 
         $data = $request->except('ward_id');
-        $ward = \App\Models\Ward::with('patients')->find($request->ward_id);
+        $ward = \App\Models\Ward::find($request->ward_id);
 
-        if ($ward && $ward->patients->isNotEmpty()) {
-            // Get all current patients assigned to the ward
-            $participantIds = $ward->patients->pluck('id')->toArray();
-            $data['participant_ids'] = $participantIds;
-            $data['ward_id'] = $request->ward_id;
+        if ($ward) {
+            // Get only active patients (not discharged) currently assigned to the ward
+            $activePatients = $ward->patients()
+                ->wherePivot('discharged_at', null)
+                ->get();
+            
+            if ($activePatients->isNotEmpty()) {
+                // Get patient IDs of active patients in the ward
+                $participantIds = $activePatients->pluck('id')->toArray();
+                $data['participant_ids'] = $participantIds;
+                $data['ward_id'] = $request->ward_id;
+            } else {
+                $data['participant_ids'] = null;
+                $data['ward_id'] = null;
+            }
         } else {
             $data['participant_ids'] = null;
             $data['ward_id'] = null;
         }
 
         $data['physiotherapist_id'] = auth()->id();
+        $data['therapy_type'] = 'group';
 
         TherapyReport::create($data);
 

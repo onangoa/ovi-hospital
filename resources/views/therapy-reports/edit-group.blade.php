@@ -8,7 +8,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('therapy-reports.index') }}">Therapy Reports</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('therapy-reports.group') }}">Group Therapy Reports</a></li>
                         <li class="breadcrumb-item active">Edit Group Therapy Session</li>
                     </ol>
                 </div>
@@ -68,8 +68,34 @@
                         <div class="card mb-4">
                             <div class="card-header"><h3 class="card-title">Group Therapy Session</h3></div>
                             <div class="card-body">
+                                @if($therapyReport->ward_id)
+                                    <div class="form-group">
+                                        <label for="participants_preview">Participants (from ward: {{ $therapyReport->ward->name }})</label>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-users"></i></span>
+                                            </div>
+                                            <textarea name="participants_preview" class="form-control" id="participants_preview" rows="3" readonly placeholder="Participants will be automatically populated from selected ward">
+                                                @if($therapyReport->participant_ids && count($therapyReport->participant_ids) > 0)
+                                                    @foreach($therapyReport->participant_ids as $participantId)
+                                                        @php $participant = \App\Models\User::find($participantId); @endphp
+                                                        @if($participant)
+                                                            {{ $participant->name }}@if(!$loop->last), @endif
+                                                        @endif
+                                                    @endforeach
+                                                @else
+                                                    No active participants in this ward
+                                                @endif
+                                            </textarea>
+                                        </div>
+                                        <small class="form-text text-info">
+                                            <i class="fas fa-info-circle"></i> Participants are automatically loaded from the ward. Only active patients (not discharged) will be included.
+                                        </small>
+                                    </div>
+                                @endif
+                                
                                 <div class="form-group">
-                                    <label for="participant_ids">Participants</label>
+                                    <label for="participant_ids">Manually Adjust Participants</label>
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fas fa-users"></i></span>
@@ -85,7 +111,10 @@
                                             </div>
                                         @enderror
                                     </div>
-
+                                    <small class="form-text text-muted">
+                                        <i class="fas fa-info-circle"></i> Use this to manually add or remove participants if needed.
+                                    </small>
+ 
                                 </div>
                                 
                                 <div class="form-group">
@@ -111,7 +140,7 @@
                                     <label class="col-md-3 col-form-label"></label>
                                     <div class="col-md-8">
                                         <input type="submit" value="Submit" class="btn btn-outline btn-info btn-lg"/>
-                                        <a href="{{ route('therapy-reports.index') }}" class="btn btn-outline btn-warning btn-lg">Cancel</a>
+                                        <a href="{{ route('therapy-reports.group') }}" class="btn btn-outline btn-warning btn-lg">Cancel</a>
                                     </div>
                                 </div>
                             </div>

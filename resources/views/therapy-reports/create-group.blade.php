@@ -104,21 +104,34 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="ward_name">Ward</label>
-                                            <div class="input-group mb-3">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"><i class="fas fa-hospital"></i></span>
-                                                </div>
-                                                <input type="text" name="ward_name" class="form-control @error('ward_id') is-invalid @enderror" id="ward_name" readonly placeholder="Select a time slot to see assigned ward">
-                                                <input type="hidden" name="ward_id" id="ward_id">
-                                                @error('ward_id')
-                                                    <div class="invalid-feedback">
-                                                        {{ $message }}
-                                                    </div>
-                                                @enderror
-                                            </div>
+                                <div class="form-group">
+                                    <label for="ward_name">Ward</label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-hospital"></i></span>
                                         </div>
+                                        <input type="text" name="ward_name" class="form-control @error('ward_id') is-invalid @enderror" id="ward_name" readonly placeholder="Select a time slot to see assigned ward">
+                                        <input type="hidden" name="ward_id" id="ward_id">
+                                        @error('ward_id')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="participants_preview">Participants (from selected ward)</label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-users"></i></span>
+                                        </div>
+                                        <textarea name="participants_preview" class="form-control" id="participants_preview" rows="3" readonly placeholder="Participants will be automatically populated from the selected ward"></textarea>
+                                    </div>
+                                    <small class="form-text text-info">
+                                        <i class="fas fa-info-circle"></i> Participants are automatically loaded from the selected ward. Only active patients (not discharged) will be included.
+                                    </small>
+                                </div>
                                     </div>
                                 </div>
 
@@ -255,6 +268,91 @@
                     $('#ward_id').val('');
                 }
             });
+        });
+    </script>
+@endpush
+@push('footer')
+    <script>
+        $(document).ready(function() {
+            $('#session_time').on('change', function() {
+                const timeSlot = $(this).val();
+                console.log('Time slot selected:', timeSlot);
+                
+                if (timeSlot) {
+                    // Fetch ward for selected time slot
+                    $.ajax({
+                        url: "{{ route('group-therapy.get-ward-by-slot') }}",
+                        method: 'GET',
+                        data: { time_slot: timeSlot },
+                        beforeSend: function() {
+                            console.log('Sending request for time slot:', timeSlot);
+                        },
+                        success: function(response) {
+                            console.log('Response received:', response);
+                            if (response.ward_id) {
+                                console.log('Setting ward ID:', response.ward_id);
+                                console.log('Ward name:', response.ward_name);
+                                
+                                // Set to ward name and ID in readonly fields
+                                $('#ward_name').val(response.ward_name);
+                                $('#ward_id').val(response.ward_id);
+                                
+                                // Fetch participants for this ward
+                                fetchWardParticipants(response.ward_id);
+                            } else {
+                                console.log('No ward_id in response');
+                                // Clear ward fields
+                                $('#ward_name').val('');
+                                $('#ward_id').val('');
+                                $('#participants_preview').val('');
+                            }
+                        },
+                        error: function(xhr) {
+                            console.log('Error fetching ward:', xhr.status, xhr.responseJSON ? xhr.responseJSON.error : 'Unknown error');
+                            console.log('Response text:', xhr.responseText);
+                            // Clear ward fields
+                            $('#ward_name').val('');
+                            $('#ward_id').val('');
+                            $('#participants_preview').val('');
+                        }
+                    });
+                } else {
+                    console.log('No time slot selected, clearing ward');
+                    // Clear ward fields
+                    $('#ward_name').val('');
+                    $('#ward_id').val('');
+                    $('#participants_preview').val('');
+                }
+            });
+            
+            // Function to fetch participants for a ward
+            function fetchWardParticipants(wardId) {
+                if (!wardId) {
+                    $('#participants_preview').val('');
+                    return;
+                }
+                
+                $.ajax({
+                    url: "/api/wards/" + wardId + "/patients",
+                    method: 'GET',
+                    beforeSend: function() {
+                        console.log('Fetching patients for ward:', wardId);
+                    },
+                    success: function(patients) {
+                        console.log('Patients received:', patients);
+                        if (patients && patients.length > 0) {
+                            const participantNames = patients.map(p => p.name).join(', ');
+                            $('#participants_preview').val(participantNames);
+                        } else {
+                            $('#participants_preview').val('No active patients in this ward');
+                        }
+                    },
+                    error: function(xhr) {
+                        console.log('Error fetching patients:', xhr.status);
+                        $('#participants_preview').val('Error loading participants');
+                    }
+                });
+            }
         });
     </script>
 @endpush

@@ -10,6 +10,7 @@ class TherapyReport extends Model
     use HasFactory;
 
     protected $fillable = [
+        'therapy_type',
         'date',
         'physiotherapist_id',
         'session_time',

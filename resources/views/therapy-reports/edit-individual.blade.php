@@ -76,13 +76,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="far fa-clock"></i></span>
                                                 </div>
-                                                <select name="session_time" class="form-control @error('session_time') is-invalid @enderror" id="session_time">
-                                                    <option value="">Select Time</option>
-                                                    <option value="9:00 AM - 10:00 AM" {{ old('session_time', $therapyReport->session_time) == '9:00 AM - 10:00 AM' ? 'selected' : '' }}>9:00 AM - 10:00 AM</option>
-                                                    <option value="10:00 AM - 11:00 AM" {{ old('session_time', $therapyReport->session_time) == '10:00 AM - 11:00 AM' ? 'selected' : '' }}>10:00 AM - 11:00 AM</option>
-                                                    <option value="11:00 AM - 12:00 PM" {{ old('session_time', $therapyReport->session_time) == '11:00 AM - 12:00 PM' ? 'selected' : '' }}>11:00 AM - 12:00 PM</option>
-                                                    <option value="3:00 PM - 4:30 PM" {{ old('session_time', $therapyReport->session_time) == '3:00 PM - 4:30 PM' ? 'selected' : '' }}>3:00 PM - 4:30 PM</option>
-                                                </select>
+                                                <input type="text" name="session_time" class="form-control @error('session_time') is-invalid @enderror" id="session_time" value="{{ old('session_time', $therapyReport->session_time) }}" readonly>
                                                 @error('session_time')
                                                     <div class="invalid-feedback">
                                                         {{ $message }}
@@ -98,18 +92,8 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="fas fa-user-injured"></i></span>
                                                 </div>
-                                                <select name="patient_id" class="form-control @error('patient_id') is-invalid @enderror" id="patient_id">
-                                                    <option value="">--@lang('Select Patient')--</option>
-                                                    @foreach($patients as $patient)
-                                                        <option value="{{ $patient->id }}"
-                                                            @if(old('patient_id') == $patient->id)
-                                                                selected
-                                                            @elseif(!old('patient_id') && $therapyReport->patient_id == $patient->id)
-                                                                selected
-                                                            @endif
-                                                        >{{ $patient->name }}</option>
-                                                    @endforeach
-                                                </select>
+                                                <input type="text" name="patient_name_display" class="form-control @error('patient_id') is-invalid @enderror" id="patient_name_display" value="{{ $therapyReport->patient ? $therapyReport->patient->name : '' }}" readonly>
+                                                <input type="hidden" name="patient_id" id="patient_id" value="{{ old('patient_id', $therapyReport->patient_id) }}">
                                                 @error('patient_id')
                                                     <div class="invalid-feedback">
                                                         {{ $message }}

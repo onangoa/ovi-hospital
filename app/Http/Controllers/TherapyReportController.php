@@ -231,7 +231,7 @@ class TherapyReportController extends Controller
         $request->validate([
             'date' => 'nullable|date',
             'session_time' => 'nullable|string|max:255',
-            'patient_id' => 'nullable|exists:users,id',
+            'patient_id' => 'required|exists:users,id',
             'session_summary' => 'nullable|string',
             'overall_observations' => 'nullable|string',
             'equipment_clean_up' => 'nullable|string',
@@ -261,7 +261,7 @@ class TherapyReportController extends Controller
         $request->validate([
             'date' => 'nullable|date',
             'session_time' => 'nullable|string|max:255',
-            'patient_id' => 'nullable|exists:users,id',
+            'patient_id' => 'required|exists:users,id',
             'session_summary' => 'nullable|string',
             'overall_observations' => 'nullable|string',
             'equipment_clean_up' => 'nullable|string',
@@ -324,6 +324,10 @@ class TherapyReportController extends Controller
     {
         $patients = \App\Models\User::role('Patient')->where('company_id', session('company_id'))->where('status', '1')->get();
         $currentUser = auth()->user();
+        
+        // Load patient relationship to display patient name
+        $therapyReport->load('patient');
+        
         return view('therapy-reports.edit-individual', compact('therapyReport', 'patients', 'currentUser'));
     }
 

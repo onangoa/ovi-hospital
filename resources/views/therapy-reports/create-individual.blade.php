@@ -166,11 +166,16 @@
             $('#session_time').on('change', function() {
                 const timeSlot = $(this).val();
                 console.log('Time slot selected:', timeSlot);
+                let url = "{{ route('individual-therapy.get-patient-by-slot') }}";
+
+                if (url.startsWith('http://')) {
+                    url = url.replace('http://', 'https://');
+                }
                 
                 if (timeSlot) {
                     // Fetch patient for the selected time slot
                     $.ajax({
-                        url: "{{ route('individual-therapy.get-patient-by-slot') }}",
+                        url: url,
                         method: 'GET',
                         data: { time_slot: timeSlot },
                         beforeSend: function() {
